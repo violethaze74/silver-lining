@@ -29,14 +29,15 @@ $userSession = \OC::$server->getUserSession();
 // TODO: move this to the generated config.js
 /** @var IManager $shareManager */
 $shareManager = \OC::$server->get(IManager::class);
-$publicUploadEnabled = $shareManager->shareApiLinkAllowPublicUpload() ? 'yes' : 'no';
+$publicUploadEnabled = $shareManager->shareApiLinkAllowPublicUpload() ? 'yes' : 'no';;
 
 $showgridview = $config->getUserValue($userSession->getUser()->getUID(), 'files', 'show_grid', false);
+$isIE = OC_Util::isIe();
 
 // renders the controls and table headers template
 $tmpl = new OCP\Template('files', 'list', '');
 
 // gridview not available for ie
-$tmpl->assign('showgridview', $showgridview);
+$tmpl->assign('showgridview', $showgridview && !$isIE);
 $tmpl->assign('publicUploadEnabled', $publicUploadEnabled);
 $tmpl->printPage();

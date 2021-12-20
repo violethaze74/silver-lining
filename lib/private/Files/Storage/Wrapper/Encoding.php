@@ -29,7 +29,6 @@
 namespace OC\Files\Storage\Wrapper;
 
 use OC\Cache\CappedMemoryCache;
-use OC\Files\Filesystem;
 use OCP\Files\Storage\IStorage;
 use OCP\ICache;
 
@@ -163,8 +162,7 @@ class Encoding extends Wrapper {
 	 * @return resource|bool
 	 */
 	public function opendir($path) {
-		$handle = $this->storage->opendir($this->findPathToUse($path));
-		return EncodingDirectoryWrapper::wrap($handle);
+		return $this->storage->opendir($this->findPathToUse($path));
 	}
 
 	/**
@@ -534,16 +532,10 @@ class Encoding extends Wrapper {
 	}
 
 	public function getMetaData($path) {
-		$entry = $this->storage->getMetaData($this->findPathToUse($path));
-		$entry['name'] = trim(Filesystem::normalizePath($entry['name']), '/');
-		return $entry;
+		return $this->storage->getMetaData($this->findPathToUse($path));
 	}
 
 	public function getDirectoryContent($directory): \Traversable {
-		$entries = $this->storage->getDirectoryContent($this->findPathToUse($directory));
-		foreach ($entries as $entry) {
-			$entry['name'] = trim(Filesystem::normalizePath($entry['name']), '/');
-			yield $entry;
-		}
+		return $this->storage->getDirectoryContent($this->findPathToUse($directory));
 	}
 }

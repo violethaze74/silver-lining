@@ -145,9 +145,6 @@ class Scanner extends PublicEmitter {
 			$this->emit('\OC\Files\Utils\Scanner', 'postScanFolder', [$mount->getMountPoint() . $path]);
 			$this->dispatcher->dispatchTyped(new FolderScannedEvent($mount->getMountPoint() . $path));
 		});
-		$scanner->listen('\OC\Files\Cache\Scanner', 'normalizedNameMismatch', function ($path) use ($mount) {
-			$this->emit('\OC\Files\Utils\Scanner', 'normalizedNameMismatch', [$path]);
-		});
 	}
 
 	/**
@@ -166,6 +163,10 @@ class Scanner extends PublicEmitter {
 				continue;
 			}
 
+			// don't scan received local shares, these can be scanned when scanning the owner's storage
+			if ($storage->instanceOfStorage(SharedStorage::class)) {
+				continue;
+			}
 			$scanner = $storage->getScanner();
 			$this->attachListener($mount);
 

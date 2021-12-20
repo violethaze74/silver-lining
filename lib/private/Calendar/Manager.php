@@ -167,14 +167,15 @@ class Manager implements IManager {
 		$this->calendarLoaders = [];
 	}
 
-	public function getCalendarsForPrincipal(string $principalUri, array $calendarUris = []): array {
+	public function searchForPrincipal(ICalendarQuery $query): array {
 		$context = $this->coordinator->getRegistrationContext();
 		if ($context === null) {
 			return [];
 		}
 
-		return array_merge(
-			...array_map(function ($registration) use ($principalUri, $calendarUris) {
+		/** @var CalendarQuery $query */
+		$calendars = array_merge(
+			...array_map(function ($registration) use ($query) {
 				try {
 					/** @var ICalendarProvider $provider */
 					$provider = $this->container->get($registration->getService());
@@ -185,16 +186,8 @@ class Manager implements IManager {
 					return [];
 				}
 
-				return $provider->getCalendars($principalUri, $calendarUris);
+				return $provider->getCalendars($query->getPrincipalUri(), $query->getCalendarUris());
 			}, $context->getCalendarProviders())
-		);
-	}
-
-	public function searchForPrincipal(ICalendarQuery $query): array {
-		/** @var CalendarQuery $query */
-		$calendars = $this->getCalendarsForPrincipal(
-			$query->getPrincipalUri(),
-			$query->getCalendarUris(),
 		);
 
 		$results = [];

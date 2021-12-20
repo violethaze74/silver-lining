@@ -304,12 +304,20 @@ const Dialogs = {
 				multiselect = false
 			}
 
-			self.$filePicker.find('#picker-view-toggle').remove()
-			self.$filePicker.find('#picker-filestable').removeClass('view-grid')
+			// No grid for IE!
+			if (OC.Util.isIE()) {
+				self.$filePicker.find('#picker-view-toggle').remove()
+				self.$filePicker.find('#picker-filestable').removeClass('view-grid')
+			}
 
 			$('body').append(self.$filePicker)
 
-			self._getGridSettings()
+			self.$showGridView = $('input#picker-showgridview')
+			self.$showGridView.on('change', _.bind(self._onGridviewChange, self))
+
+			if (!OC.Util.isIE()) {
+				self._getGridSettings()
+			}
 
 			var newButton = self.$filePicker.find('.actions.creatable .button-add')
 			if (type === self.FILEPICKER_TYPE_CHOOSE && !options.allowDirectoryChooser) {

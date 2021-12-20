@@ -104,8 +104,7 @@ class Account implements IAccount {
 		return $result;
 	}
 
-	/** @return IAccountPropertyCollection[]|IAccountProperty[] */
-	public function jsonSerialize(): array {
+	public function jsonSerialize() {
 		return $this->properties;
 	}
 

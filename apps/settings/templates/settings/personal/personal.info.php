@@ -80,6 +80,7 @@ script('settings', [
 				<span class="icon-checkmark hidden"></span>
 				<span class="icon-error hidden"></span>
 				<input type="hidden" id="avatarscope" value="<?php p($_['avatarScope']) ?>">
+				<div id="vue-profile-visibility-avatar"></div>
 			</form>
 		</div>
 		<div class="personal-settings-setting-box personal-settings-group-box section">
@@ -132,6 +133,7 @@ script('settings', [
 				<span class="icon-checkmark hidden"></span>
 				<span class="icon-error hidden"></span>
 				<input type="hidden" id="phonescope" value="<?php p($_['phoneScope']) ?>">
+				<div id="vue-profile-visibility-phone"></div>
 			</form>
 		</div>
 		<div class="personal-settings-setting-box">
@@ -148,6 +150,7 @@ script('settings', [
 				<span class="icon-checkmark hidden"></span>
 				<span class="icon-error hidden"></span>
 				<input type="hidden" id="addressscope" value="<?php p($_['addressScope']) ?>">
+				<div id="vue-profile-visibility-address"></div>
 			</form>
 		</div>
 		<div class="personal-settings-setting-box">
@@ -192,6 +195,7 @@ script('settings', [
 				<span class="icon-checkmark hidden"></span>
 				<span class="icon-error hidden"></span>
 				<input type="hidden" id="websitescope" value="<?php p($_['websiteScope']) ?>">
+				<div id="vue-profile-visibility-website"></div>
 			</form>
 		</div>
 		<div class="personal-settings-setting-box">
@@ -236,6 +240,7 @@ script('settings', [
 				<span class="icon-checkmark hidden"></span>
 				<span class="icon-error hidden"></span>
 				<input type="hidden" id="twitterscope" value="<?php p($_['twitterScope']) ?>">
+				<div id="vue-profile-visibility-twitter"></div>
 			</form>
 		</div>
 		<div class="personal-settings-setting-box">
@@ -255,6 +260,9 @@ script('settings', [
 	<div class="profile-settings-container">
 		<div class="personal-settings-setting-box">
 			<div id="vue-profile-section"></div>
+		</div>
+		<div class="personal-settings-setting-box">
+			<div id="vue-profile-visibility-section"></div>
 		</div>
 		<div class="personal-settings-setting-box personal-settings-language-box">
 			<div id="vue-language-section"></div>
@@ -301,8 +309,4 @@ script('settings', [
 
 	</div>
 
-</div>
-
-<div class="personal-settings-section">
-	<div id="vue-profile-visibility-section"></div>
 </div>

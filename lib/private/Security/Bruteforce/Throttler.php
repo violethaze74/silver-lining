@@ -66,8 +66,6 @@ class Throttler {
 	private $logger;
 	/** @var IConfig */
 	private $config;
-	/** @var bool */
-	private $hasAttemptsDeleted = false;
 
 	/**
 	 * @param IDBConnection $db
@@ -232,7 +230,7 @@ class Throttler {
 			$maxAgeHours = 48;
 		}
 
-		if ($ip === '' || $this->hasAttemptsDeleted) {
+		if ($ip === '') {
 			return 0;
 		}
 
@@ -308,9 +306,7 @@ class Throttler {
 			->andWhere($qb->expr()->eq('action', $qb->createNamedParameter($action)))
 			->andWhere($qb->expr()->eq('metadata', $qb->createNamedParameter(json_encode($metadata))));
 
-		$qb->executeStatement();
-
-		$this->hasAttemptsDeleted = true;
+		$qb->execute();
 	}
 
 	/**

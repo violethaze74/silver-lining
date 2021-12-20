@@ -54,7 +54,7 @@ class InitialStateServiceTest extends TestCase {
 			[23],
 			[2.3],
 			[new class implements JsonSerializable {
-				public function jsonSerialize(): int {
+				public function jsonSerialize() {
 					return 3;
 				}
 			}],

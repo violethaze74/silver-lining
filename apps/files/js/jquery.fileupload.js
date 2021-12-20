@@ -1029,12 +1029,7 @@
             } else {
                 paramNameSet = paramName;
             }
-            data.originalFiles = [];
-            $.each(files, function (file) {
-                if (!file.isDirectory) {
-                    data.originalFiles.push(file);
-                }
-            });
+            data.originalFiles = files;
             $.each(fileSet || files, function (index, element) {
                 var newData = $.extend({}, data);
                 newData.files = fileSet ? element : [element];
@@ -1103,12 +1098,7 @@
                         entries,
                         path + entry.name + '/'
                     ).done(function (files) {
-                        // empty folder
-                        if (!files.length && entry.isDirectory) {
-                            dfd.resolve(entry);
-                        } else {
-                            dfd.resolve(files);
-                        }
+                        dfd.resolve(files);
                     }).fail(errorHandler);
                 },
                 readEntries = function () {

@@ -379,15 +379,11 @@ class Availability extends Wrapper {
 
 	/** {@inheritdoc} */
 	public function hasUpdated($path, $time) {
-		if (!$this->isAvailable()) {
-			return false;
-		}
+		$this->checkAvailability();
 		try {
 			return parent::hasUpdated($path, $time);
 		} catch (StorageNotAvailableException $e) {
-			// set unavailable but don't rethrow
-			$this->setUnavailable(null);
-			return false;
+			$this->setUnavailable($e);
 		}
 	}
 
@@ -453,7 +449,7 @@ class Availability extends Wrapper {
 	/**
 	 * @throws StorageNotAvailableException
 	 */
-	protected function setUnavailable(?StorageNotAvailableException $e): void {
+	protected function setUnavailable(StorageNotAvailableException $e) {
 		$delay = self::RECHECK_TTL_SEC;
 		if ($e instanceof StorageAuthException) {
 			$delay = max(
@@ -463,9 +459,7 @@ class Availability extends Wrapper {
 			);
 		}
 		$this->getStorageCache()->setAvailability(false, $delay);
-		if ($e !== null) {
-			throw $e;
-		}
+		throw $e;
 	}
 
 

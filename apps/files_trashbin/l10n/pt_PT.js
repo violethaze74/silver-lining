@@ -5,6 +5,7 @@ OC.L10N.register(
     "restored" : "Restaurado",
     "Restore" : "Restaurar",
     "Delete permanently" : "Eliminar permanentemente",
+    "Error while removing file from trashbin" : "Erro ao remover arquivo da lixeira",
     "This operation is forbidden" : "Esta operação é proibida",
     "This directory is unavailable, please check the logs or contact the administrator" : "Esta pasta não está disponível, por favor, verifique os registos ou contacte o administrador",
     "No deleted files" : "Sem ficheiros eliminados",
@@ -14,7 +15,6 @@ OC.L10N.register(
     "Name" : "Nome",
     "Actions" : "Ações",
     "Deleted" : "Eliminado",
-    "Delete" : "Eliminar",
-    "Error while removing file from trashbin" : "Erro ao remover arquivo da lixeira"
+    "Delete" : "Eliminar"
 },
 "nplurals=2; plural=(n != 1);");

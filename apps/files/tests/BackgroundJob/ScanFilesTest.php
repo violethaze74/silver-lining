@@ -30,6 +30,7 @@ use OCP\EventDispatcher\IEventDispatcher;
 use OCP\IConfig;
 use OCP\ILogger;
 use OCP\IUser;
+use OCP\IUserManager;
 use Test\TestCase;
 use Test\Traits\MountProviderTrait;
 use Test\Traits\UserTrait;
@@ -53,6 +54,7 @@ class ScanFilesTest extends TestCase {
 		parent::setUp();
 
 		$config = $this->createMock(IConfig::class);
+		$userManager = $this->createMock(IUserManager::class);
 		$dispatcher = $this->createMock(IEventDispatcher::class);
 		$logger = $this->createMock(ILogger::class);
 		$connection = \OC::$server->getDatabaseConnection();
@@ -61,6 +63,7 @@ class ScanFilesTest extends TestCase {
 		$this->scanFiles = $this->getMockBuilder('\OCA\Files\BackgroundJob\ScanFiles')
 			->setConstructorArgs([
 				$config,
+				$userManager,
 				$dispatcher,
 				$logger,
 				$connection,

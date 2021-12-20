@@ -362,12 +362,7 @@ class Activity implements IProvider {
 	 * @return string
 	 */
 	protected function getContactName($email) {
-		$addressBookContacts = $this->contactsManager->search($email, ['EMAIL'], [
-			'limit' => 1,
-			'enumeration' => false,
-			'fullmatch' => false,
-			'strict_search' => true,
-		]);
+		$addressBookContacts = $this->contactsManager->search($email, ['EMAIL']);
 
 		foreach ($addressBookContacts as $contact) {
 			if (isset($contact['isLocalSystemBook'])) {

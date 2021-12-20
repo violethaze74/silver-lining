@@ -46,7 +46,7 @@ abstract class LogDetails {
 		}
 		$time = \DateTime::createFromFormat("U.u", number_format(microtime(true), 4, ".", ""));
 		if ($time === false) {
-			$time = new \DateTime('now', $timezone);
+			$time = new \DateTime(null, $timezone);
 		} else {
 			// apply timezone if $time is created from UNIX timestamp
 			$time->setTimezone($timezone);

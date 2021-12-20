@@ -820,7 +820,7 @@ class Wizard extends LDAPUtility {
 			return false;
 		}
 		$er = $this->ldap->firstEntry($cr, $rr);
-		while ($this->ldap->isResource($er)) {
+		while (is_resource($er)) {
 			$this->ldap->getDN($cr, $er);
 			$attrs = $this->ldap->getAttributes($cr, $er);
 			$result = [];
@@ -1066,7 +1066,7 @@ class Wizard extends LDAPUtility {
 			['app' => 'user_ldap']
 		);
 		$cr = $this->ldap->connect($host, $port);
-		if (!$this->ldap->isResource($cr)) {
+		if (!is_resource($cr)) {
 			throw new \Exception(self::$l->t('Invalid Host'));
 		}
 
@@ -1276,7 +1276,7 @@ class Wizard extends LDAPUtility {
 
 	/**
 	 * appends a list of values fr
-	 * @param array $result the return value from ldap_get_attributes
+	 * @param resource $result the return value from ldap_get_attributes
 	 * @param string $attribute the attribute values to look for
 	 * @param array &$known new values will be appended here
 	 * @return int, state on of the class constants LRESULT_PROCESSED_OK,

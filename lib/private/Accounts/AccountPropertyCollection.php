@@ -102,7 +102,7 @@ class AccountPropertyCollection implements IAccountPropertyCollection {
 		return $this;
 	}
 
-	public function jsonSerialize(): array {
+	public function jsonSerialize() {
 		return [$this->collectionName => $this->properties];
 	}
 

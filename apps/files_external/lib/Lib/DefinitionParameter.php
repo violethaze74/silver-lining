@@ -167,8 +167,10 @@ class DefinitionParameter implements \JsonSerializable {
 
 	/**
 	 * Serialize into JSON for client-side JS
+	 *
+	 * @return string
 	 */
-	public function jsonSerialize(): array {
+	public function jsonSerialize() {
 		return [
 			'value' => $this->getText(),
 			'flags' => $this->getFlags(),

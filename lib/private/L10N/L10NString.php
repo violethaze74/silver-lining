@@ -82,7 +82,11 @@ class L10NString implements \JsonSerializable {
 		return vsprintf($text, $this->parameters);
 	}
 
-	public function jsonSerialize(): string {
+
+	/**
+	 * @return string
+	 */
+	public function jsonSerialize() {
 		return $this->__toString();
 	}
 }

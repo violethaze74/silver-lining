@@ -255,12 +255,7 @@ class Notifier implements INotifier {
 			}
 		}
 
-		$addressBookEntries = $this->contactsManager->search($federatedCloudId, ['CLOUD'], [
-			'limit' => 1,
-			'enumeration' => false,
-			'fullmatch' => false,
-			'strict_search' => true,
-		]);
+		$addressBookEntries = $this->contactsManager->search($federatedCloudId, ['CLOUD']);
 		foreach ($addressBookEntries as $entry) {
 			if (isset($entry['CLOUD'])) {
 				foreach ($entry['CLOUD'] as $cloudID) {

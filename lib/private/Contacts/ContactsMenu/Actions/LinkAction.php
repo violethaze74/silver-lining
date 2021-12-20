@@ -106,7 +106,10 @@ class LinkAction implements ILinkAction {
 		return $this->appId;
 	}
 
-	public function jsonSerialize(): array {
+	/**
+	 * @return array
+	 */
+	public function jsonSerialize() {
 		return [
 			'title' => $this->name,
 			'icon' => $this->icon,

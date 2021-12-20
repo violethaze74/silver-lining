@@ -96,9 +96,7 @@ export default {
 			}
 		}
 
-		&:hover,
-		&:focus,
-		&:active {
+		&:hover {
 			background-color: var(--color-primary-element-light);
 		}
 	}

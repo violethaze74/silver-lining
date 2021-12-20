@@ -4417,11 +4417,7 @@ class ShareAPIControllerTest extends TestCase {
 
 		$cm->method('search')
 			->willReturnMap([
-				['user@server.com', ['CLOUD'], [
-					'limit' => 1,
-					'enumeration' => false,
-					'strict_search' => true,
-				],
+				['user@server.com', ['CLOUD'], [],
 					[
 						[
 							'CLOUD' => [
@@ -4431,11 +4427,7 @@ class ShareAPIControllerTest extends TestCase {
 						],
 					],
 				],
-				['user@server.com', ['EMAIL'], [
-					'limit' => 1,
-					'enumeration' => false,
-					'strict_search' => true,
-				],
+				['user@server.com', ['EMAIL'], [],
 					[
 						[
 							'EMAIL' => [

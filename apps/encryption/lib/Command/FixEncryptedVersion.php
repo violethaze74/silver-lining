@@ -116,7 +116,10 @@ class FixEncryptedVersion extends Command {
 		$user = (string)$input->getArgument('user');
 		$pathToWalk = "/$user/files";
 
-		$pathOption = \trim(($input->getOption('path') ?? ''), '/');
+		/**
+		 * trim() returns an empty string when the argument is an unset/null
+		 */
+		$pathOption = \trim($input->getOption('path'), '/');
 		if ($pathOption !== "") {
 			$pathToWalk = "$pathToWalk/$pathOption";
 		}

@@ -33,29 +33,15 @@ class TrustedDomainHelperTest extends \Test\TestCase {
 	 * @param string $testDomain
 	 * @param bool $result
 	 */
-	public function testIsTrustedUrl($trustedDomains, $testDomain, $result) {
-		$this->config->method('getSystemValue')
-			->willReturnMap([
-				['overwritehost', '', ''],
-				['trusted_domains', [], $trustedDomains],
-			]);
-
-		$trustedDomainHelper = new TrustedDomainHelper($this->config);
-		$this->assertEquals($result, $trustedDomainHelper->isTrustedUrl('https://' . $testDomain . '/index.php/something'));
-	}
-
-	/**
-	 * @dataProvider trustedDomainDataProvider
-	 * @param string $trustedDomains
-	 * @param string $testDomain
-	 * @param bool $result
-	 */
 	public function testIsTrustedDomain($trustedDomains, $testDomain, $result) {
-		$this->config->method('getSystemValue')
-			->willReturnMap([
-				['overwritehost', '', ''],
-				['trusted_domains', [], $trustedDomains],
-			]);
+		$this->config->expects($this->at(0))
+			->method('getSystemValue')
+			->with('overwritehost')
+			->willReturn('');
+		$this->config->expects($this->at(1))
+			->method('getSystemValue')
+			->with('trusted_domains')
+			->willReturn($trustedDomains);
 
 		$trustedDomainHelper = new TrustedDomainHelper($this->config);
 		$this->assertEquals($result, $trustedDomainHelper->isTrustedDomain($testDomain));
@@ -136,7 +122,8 @@ class TrustedDomainHelperTest extends \Test\TestCase {
 	}
 
 	public function testIsTrustedDomainOverwriteHost() {
-		$this->config->method('getSystemValue')
+		$this->config->expects($this->at(0))
+			->method('getSystemValue')
 			->with('overwritehost')
 			->willReturn('myproxyhost');
 

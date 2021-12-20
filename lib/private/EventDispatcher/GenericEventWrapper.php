@@ -100,23 +100,19 @@ class GenericEventWrapper extends GenericEvent {
 		return $this->event->hasArgument($key);
 	}
 
-	/**
-	 * @return mixed
-	 */
-	#[\ReturnTypeWillChange]
 	public function offsetGet($key) {
 		return $this->event->offsetGet($key);
 	}
 
-	public function offsetSet($key, $value): void {
-		$this->event->offsetSet($key, $value);
+	public function offsetSet($key, $value) {
+		return $this->event->offsetSet($key, $value);
 	}
 
-	public function offsetUnset($key): void {
-		$this->event->offsetUnset($key);
+	public function offsetUnset($key) {
+		return $this->event->offsetUnset($key);
 	}
 
-	public function offsetExists($key): bool {
+	public function offsetExists($key) {
 		return $this->event->offsetExists($key);
 	}
 
