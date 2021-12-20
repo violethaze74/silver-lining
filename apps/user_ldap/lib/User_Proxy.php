@@ -204,10 +204,11 @@ class User_Proxy extends Proxy implements \OCP\IUserBackend, \OCP\UserInterface,
 	 *
 	 * @param string|\OCA\User_LDAP\User\User $user either the Nextcloud user
 	 * name or an instance of that user
+	 * @return boolean
 	 */
-	public function userExistsOnLDAP($user, bool $ignoreCache = false): bool {
+	public function userExistsOnLDAP($user) {
 		$id = ($user instanceof User) ? $user->getUsername() : $user;
-		return $this->handleRequest($id, 'userExistsOnLDAP', [$user, $ignoreCache]);
+		return $this->handleRequest($id, 'userExistsOnLDAP', [$user]);
 	}
 
 	/**
@@ -368,7 +369,7 @@ class User_Proxy extends Proxy implements \OCP\IUserBackend, \OCP\UserInterface,
 	 * The connection needs to be closed manually.
 	 *
 	 * @param string $uid
-	 * @return resource|\LDAP\Connection The LDAP connection
+	 * @return resource of the LDAP connection
 	 */
 	public function getNewLDAPConnection($uid) {
 		return $this->handleRequest($uid, 'getNewLDAPConnection', [$uid]);

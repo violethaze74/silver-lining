@@ -78,23 +78,19 @@ abstract class Cache implements \ArrayAccess, \OCP\ICache {
 
 	//implement the ArrayAccess interface
 
-	public function offsetExists($offset): bool {
+	public function offsetExists($offset) {
 		return $this->hasKey($offset);
 	}
 
-	public function offsetSet($offset, $value): void {
+	public function offsetSet($offset, $value) {
 		$this->set($offset, $value);
 	}
 
-	/**
-	 * @return mixed
-	 */
-	#[\ReturnTypeWillChange]
 	public function offsetGet($offset) {
 		return $this->get($offset);
 	}
 
-	public function offsetUnset($offset): void {
+	public function offsetUnset($offset) {
 		$this->remove($offset);
 	}
 }

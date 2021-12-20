@@ -229,9 +229,6 @@ class FilesReportPluginTest extends \Test\TestCase {
 		$reportTargetNode = $this->getMockBuilder(Directory::class)
 			->disableOriginalConstructor()
 			->getMock();
-		$reportTargetNode->expects($this->any())
-			->method('getPath')
-			->willReturn('');
 
 		$response = $this->getMockBuilder(ResponseInterface::class)
 			->disableOriginalConstructor()

@@ -32,6 +32,7 @@ namespace OC\Template;
 use OC\AppConfig;
 use OC\Files\AppData\Factory;
 use OC\Memcache\NullCache;
+use OCA\Theming\ThemingDefaults;
 use OCP\AppFramework\Utility\ITimeFactory;
 use OCP\Files\IAppData;
 use OCP\Files\NotFoundException;
@@ -45,6 +46,7 @@ use OCP\ILogger;
 use OCP\IMemcache;
 use OCP\IURLGenerator;
 use ScssPhp\ScssPhp\Compiler;
+use ScssPhp\ScssPhp\Exception\ParserException;
 use ScssPhp\ScssPhp\OutputStyle;
 
 class SCSSCacher {
@@ -61,7 +63,7 @@ class SCSSCacher {
 	/** @var IConfig */
 	protected $config;
 
-	/** @var \OC_Defaults */
+	/** @var ThemingDefaults */
 	private $defaults;
 
 	/** @var string */
@@ -95,7 +97,7 @@ class SCSSCacher {
 	 * @param Factory $appDataFactory
 	 * @param IURLGenerator $urlGenerator
 	 * @param IConfig $config
-	 * @param \OC_Defaults $defaults
+	 * @param ThemingDefaults $defaults
 	 * @param string $serverRoot
 	 * @param ICacheFactory $cacheFactory
 	 * @param IconsCacher $iconsCacher
@@ -105,7 +107,7 @@ class SCSSCacher {
 								Factory $appDataFactory,
 								IURLGenerator $urlGenerator,
 								IConfig $config,
-								\OC_Defaults $defaults,
+								ThemingDefaults $defaults,
 								$serverRoot,
 								ICacheFactory $cacheFactory,
 								IconsCacher $iconsCacher,
@@ -339,7 +341,7 @@ class SCSSCacher {
 				'@import "variables.scss";' .
 				'@import "functions.scss";' .
 				'@import "' . $fileNameSCSS . '";');
-		} catch (\Exception $e) {
+		} catch (ParserException $e) {
 			$this->logger->logException($e, ['app' => 'scss_cacher']);
 
 			return false;
@@ -405,7 +407,7 @@ class SCSSCacher {
 	}
 
 	/**
-	 * @return string SCSS code for variables from OC_Defaults
+	 * @return string SCSS code for variables from ThemingDefaults
 	 */
 	private function getInjectedVariables(string $cache = ''): string {
 		if ($this->injectedVariables !== null) {
@@ -430,7 +432,7 @@ class SCSSCacher {
 			$scss = new Compiler();
 			$scss->compile($variables);
 			$this->injectedVariables = $variables;
-		} catch (\Exception $e) {
+		} catch (ParserException $e) {
 			$this->logger->logException($e, ['app' => 'scss_cacher']);
 		}
 

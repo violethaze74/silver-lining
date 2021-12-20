@@ -407,7 +407,8 @@ class ViewControllerTest extends TestCase {
 					],
 				],
 				'hiddenFields' => [],
-				'showgridview' => false
+				'showgridview' => false,
+				'isIE' => false,
 			]
 		);
 		$policy = new Http\ContentSecurityPolicy();

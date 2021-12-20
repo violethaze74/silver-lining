@@ -25,11 +25,10 @@
 		class="visibility-container"
 		:class="{ disabled }">
 		<label :for="inputId">
-			{{ t('settings', '{displayId}', { displayId }) }}
+			{{ showDisplayId ? t('settings', '{displayId} visibility', { displayId }) : t('settings', 'Visibility on Profile') }}
 		</label>
 		<Multiselect
 			:id="inputId"
-			class="visibility-container__multiselect"
 			:options="visibilityOptions"
 			track-by="name"
 			label="label"
@@ -49,6 +48,7 @@ import { saveProfileParameterVisibility } from '../../../service/ProfileService'
 import { validateStringInput } from '../../../utils/validate'
 import { VISIBILITY_PROPERTY_ENUM } from '../../../constants/ProfileConstants'
 
+const { profileConfig } = loadState('settings', 'profileParameters', {})
 const { profileEnabled } = loadState('settings', 'personalInfoParameters', false)
 
 export default {
@@ -67,16 +67,17 @@ export default {
 			type: String,
 			required: true,
 		},
-		visibility: {
-			type: String,
-			required: true,
+		showDisplayId: {
+			type: Boolean,
+			default: false,
 		},
 	},
 
 	data() {
 		return {
-			initialVisibility: this.visibility,
+			initialVisibility: profileConfig[this.paramId].visibility,
 			profileEnabled,
+			visibility: profileConfig[this.paramId].visibility,
 		}
 	},
 
@@ -111,7 +112,7 @@ export default {
 			// This check is needed as the argument is null when selecting the same option
 			if (visibilityObject !== null) {
 				const { name: visibility } = visibilityObject
-				this.$emit('update:visibility', visibility)
+				this.visibility = visibility
 
 				if (validateStringInput(visibility)) {
 					await this.updateVisibility(visibility)
@@ -153,8 +154,8 @@ export default {
 
 <style lang="scss" scoped>
 .visibility-container {
-	display: flex;
-	width: max-content;
+	margin-top: 16px;
+	display: grid;
 
 	&.disabled {
 		filter: grayscale(1);
@@ -171,12 +172,7 @@ export default {
 
 	label {
 		color: var(--color-text-lighter);
-		width: 150px;
-		line-height: 50px;
-	}
-
-	&__multiselect {
-		width: 260px;
+		margin-bottom: 3px;
 	}
 }
 </style>

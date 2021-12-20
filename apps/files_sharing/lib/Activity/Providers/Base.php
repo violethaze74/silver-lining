@@ -203,12 +203,7 @@ abstract class Base implements IProvider {
 			return $this->displayNames[$search];
 		}
 
-		$addressBookContacts = $this->contactsManager->search($search, ['CLOUD'], [
-			'limit' => 1,
-			'enumeration' => false,
-			'fullmatch' => false,
-			'strict_search' => true,
-		]);
+		$addressBookContacts = $this->contactsManager->search($search, ['CLOUD']);
 		foreach ($addressBookContacts as $contact) {
 			if (isset($contact['isLocalSystemBook'])) {
 				continue;

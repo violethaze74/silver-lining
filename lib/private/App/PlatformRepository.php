@@ -65,6 +65,10 @@ class PlatformRepository {
 					$prettyVersion = $curlVersion['version'];
 					break;
 
+				case 'iconv':
+					$prettyVersion = ICONV_VERSION;
+					break;
+
 				case 'intl':
 					$name = 'ICU';
 					if (defined('INTL_ICU_VERSION')) {

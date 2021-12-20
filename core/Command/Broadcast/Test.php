@@ -87,7 +87,7 @@ class Test extends Command {
 				];
 			}
 
-			public function jsonSerialize(): array {
+			public function jsonSerialize() {
 				return [
 					'description' => 'this is a test event',
 				];

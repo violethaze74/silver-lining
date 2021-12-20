@@ -330,8 +330,7 @@ class ShareByMailProvider implements IShareProvider {
 			$share->getSendPasswordByTalk(),
 			$share->getHideDownload(),
 			$share->getLabel(),
-			$share->getExpirationDate(),
-			$share->getNote()
+			$share->getExpirationDate()
 		);
 
 		try {
@@ -342,8 +341,7 @@ class ShareByMailProvider implements IShareProvider {
 				$link,
 				$share->getSharedBy(),
 				$share->getSharedWith(),
-				$share->getExpirationDate(),
-				$share->getNote()
+				$share->getExpirationDate()
 			);
 		} catch (HintException $hintException) {
 			$this->logger->logException($hintException, [
@@ -379,9 +377,7 @@ class ShareByMailProvider implements IShareProvider {
 											$link,
 											$initiator,
 											$shareWith,
-											\DateTime $expiration = null,
-											$note = ''
-	) {
+											\DateTime $expiration = null) {
 		$initiatorUser = $this->userManager->get($initiator);
 		$initiatorDisplayName = ($initiatorUser instanceof IUser) ? $initiatorUser->getDisplayName() : $initiator;
 		$message = $this->mailer->createMessage();
@@ -392,7 +388,6 @@ class ShareByMailProvider implements IShareProvider {
 			'initiator' => $initiatorDisplayName,
 			'expiration' => $expiration,
 			'shareWith' => $shareWith,
-			'note' => $note
 		]);
 
 		$emailTemplate->setSubject($this->l->t('%1$s shared »%2$s« with you', [$initiatorDisplayName, $filename]));
@@ -400,9 +395,6 @@ class ShareByMailProvider implements IShareProvider {
 		$emailTemplate->addHeading($this->l->t('%1$s shared »%2$s« with you', [$initiatorDisplayName, $filename]), false);
 		$text = $this->l->t('%1$s shared »%2$s« with you.', [$initiatorDisplayName, $filename]);
 
-		if ($note !== '') {
-			$emailTemplate->addBodyText(htmlspecialchars($note), $note);
-		}
 		$emailTemplate->addBodyText(
 			htmlspecialchars($text . ' ' . $this->l->t('Click the button below to open it.')),
 			$text
@@ -679,7 +671,7 @@ class ShareByMailProvider implements IShareProvider {
 	 * @param \DateTime|null $expirationTime
 	 * @return int
 	 */
-	protected function addShareToDB($itemSource, $itemType, $shareWith, $sharedBy, $uidOwner, $permissions, $token, $password, $sendPasswordByTalk, $hideDownload, $label, $expirationTime, $note = '') {
+	protected function addShareToDB($itemSource, $itemType, $shareWith, $sharedBy, $uidOwner, $permissions, $token, $password, $sendPasswordByTalk, $hideDownload, $label, $expirationTime) {
 		$qb = $this->dbConnection->getQueryBuilder();
 		$qb->insert('share')
 			->setValue('share_type', $qb->createNamedParameter(IShare::TYPE_EMAIL))
@@ -695,8 +687,7 @@ class ShareByMailProvider implements IShareProvider {
 			->setValue('password_by_talk', $qb->createNamedParameter($sendPasswordByTalk, IQueryBuilder::PARAM_BOOL))
 			->setValue('stime', $qb->createNamedParameter(time()))
 			->setValue('hide_download', $qb->createNamedParameter((int)$hideDownload, IQueryBuilder::PARAM_INT))
-			->setValue('label', $qb->createNamedParameter($label))
-			->setValue('note', $qb->createNamedParameter($note));
+			->setValue('label', $qb->createNamedParameter($label));
 
 		if ($expirationTime !== null) {
 			$qb->setValue('expiration', $qb->createNamedParameter($expirationTime, IQueryBuilder::PARAM_DATE));

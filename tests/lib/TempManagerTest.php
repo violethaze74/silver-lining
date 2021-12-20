@@ -26,9 +26,7 @@ class TempManagerTest extends \Test\TestCase {
 	}
 
 	protected function tearDown(): void {
-		if ($this->baseDir !== null) {
-			\OC_Helper::rmdirr($this->baseDir);
-		}
+		\OC_Helper::rmdirr($this->baseDir);
 		$this->baseDir = null;
 		parent::tearDown();
 	}

@@ -35,7 +35,6 @@ use OCA\Files_External\NotFoundException;
 use OCA\Files_External\Service\UserStoragesService;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\DataResponse;
-use OCP\IConfig;
 use OCP\IGroupManager;
 use OCP\IL10N;
 use OCP\ILogger;
@@ -64,8 +63,7 @@ class UserStoragesController extends StoragesController {
 		UserStoragesService $userStoragesService,
 		ILogger $logger,
 		IUserSession $userSession,
-		IGroupManager $groupManager,
-		IConfig $config
+		IGroupManager $groupManager
 	) {
 		parent::__construct(
 			$AppName,
@@ -74,8 +72,7 @@ class UserStoragesController extends StoragesController {
 			$userStoragesService,
 			$logger,
 			$userSession,
-			$groupManager,
-			$config
+			$groupManager
 		);
 	}
 
@@ -130,15 +127,6 @@ class UserStoragesController extends StoragesController {
 		$backendOptions,
 		$mountOptions
 	) {
-		$canCreateNewLocalStorage = $this->config->getSystemValue('files_external_allow_create_new_local', true);
-		if (!$canCreateNewLocalStorage && $backend === 'local') {
-			return new DataResponse(
-				[
-					'message' => $this->l10n->t('Forbidden to manage local mounts')
-				],
-				Http::STATUS_FORBIDDEN
-			);
-		}
 		$newStorage = $this->createStorage(
 			$mountPoint,
 			$backend,

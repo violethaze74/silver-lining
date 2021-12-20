@@ -21,28 +21,18 @@
 -->
 
 <template>
-	<!-- TODO remove this inline margin placeholder once the settings layout is updated -->
-	<section
-		id="profile-visibility"
-		:style="{ marginLeft }">
+	<section>
 		<HeaderBar
 			:account-property="heading" />
 
-		<em :class="{ disabled }">
-			{{ t('settings', 'The more restrictive setting of either visibility or scope is respected on your Profile. For example, if visibility is set to "Show to everyone" and scope is set to "Private", "Private" is respected.') }}
-		</em>
+		<VisibilityDropdown v-for="parameter in visibilityArray"
+			:key="parameter.id"
+			:param-id="parameter.id"
+			:display-id="parameter.displayId"
+			:show-display-id="true"
+			:visibility.sync="parameter.visibility" />
 
-		<div
-			class="visibility-dropdowns"
-			:style="{
-				gridTemplateRows: `repeat(${rows}, 44px)`,
-			}">
-			<VisibilityDropdown v-for="param in visibilityParams"
-				:key="param.id"
-				:param-id="param.id"
-				:display-id="param.displayId"
-				:visibility.sync="param.visibility" />
-		</div>
+		<em :class="{ disabled }">{{ t('settings', 'The more restrictive setting of either visibility or scope is respected on your Profile — For example, when visibility is set to "Show to everyone" and scope is set to "Private", "Private" will be respected') }}</em>
 	</section>
 </template>
 
@@ -51,21 +41,11 @@ import { loadState } from '@nextcloud/initial-state'
 import { subscribe, unsubscribe } from '@nextcloud/event-bus'
 
 import HeaderBar from '../shared/HeaderBar'
-import VisibilityDropdown from './VisibilityDropdown'
-import { PROFILE_READABLE_ENUM } from '../../../constants/AccountPropertyConstants'
+import VisibilityDropdown from '../shared/VisibilityDropdown'
+import { ACCOUNT_PROPERTY_ENUM, PROFILE_READABLE_ENUM } from '../../../constants/AccountPropertyConstants'
 
 const { profileConfig } = loadState('settings', 'profileParameters', {})
 const { profileEnabled } = loadState('settings', 'personalInfoParameters', false)
-
-const compareParams = (a, b) => {
-	if (a.appId === b.appId || (a.appId !== 'core' && b.appId !== 'core')) {
-		return a.displayId.localeCompare(b.displayId)
-	} else if (a.appId === 'core') {
-		return 1
-	} else {
-		return -1
-	}
-}
 
 export default {
 	name: 'ProfileVisibilitySection',
@@ -79,13 +59,10 @@ export default {
 		return {
 			heading: PROFILE_READABLE_ENUM.PROFILE_VISIBILITY,
 			profileEnabled,
-			visibilityParams: Object.entries(profileConfig)
-				.map(([paramId, { appId, displayId, visibility }]) => ({ id: paramId, appId, displayId, visibility }))
-				.sort(compareParams),
-			// TODO remove this when not used once the settings layout is updated
-			marginLeft: window.matchMedia('(min-width: 1600px)').matches
-				? window.getComputedStyle(document.getElementById('personal-settings-avatar-container')).getPropertyValue('width').trim()
-				: '0px'
+			visibilityArray: Object.entries(profileConfig)
+				// Filter for profile parameters registered by apps in this section as visibility controls for the rest (account properties) are handled in their respective property sections
+				.filter(([paramId, { displayId, visibility }]) => !Object.values(ACCOUNT_PROPERTY_ENUM).includes(paramId))
+				.map(([paramId, { displayId, visibility }]) => ({ id: paramId, displayId, visibility })),
 		}
 	},
 
@@ -93,20 +70,10 @@ export default {
 		disabled() {
 			return !this.profileEnabled
 		},
-
-		rows() {
-			return Math.ceil(this.visibilityParams.length / 2)
-		},
 	},
 
 	mounted() {
 		subscribe('settings:profile-enabled:updated', this.handleProfileEnabledUpdate)
-		// TODO remove this when not used once the settings layout is updated
-		window.onresize = () => {
-			this.marginLeft = window.matchMedia('(min-width: 1600px)').matches
-				? window.getComputedStyle(document.getElementById('personal-settings-avatar-container')).getPropertyValue('width').trim()
-				: '0px'
-		}
 	},
 
 	beforeDestroy() {
@@ -123,11 +90,11 @@ export default {
 
 <style lang="scss" scoped>
 section {
-	padding: 30px;
+	padding: 10px 10px;
 
 	em {
 		display: block;
-		margin: 16px 0;
+		margin-top: 16px;
 
 		&.disabled {
 			filter: grayscale(1);
@@ -143,21 +110,8 @@ section {
 		}
 	}
 
-	.visibility-dropdowns {
-		display: grid;
-		gap: 10px 40px;
-	}
-
-	@media (min-width: 1200px) {
-		width: 940px;
-
-		.visibility-dropdowns {
-			grid-auto-flow: column;
-		}
-	}
-
-	@media (max-width: 1200px) {
-		width: 470px;
+	&::v-deep button:disabled {
+		cursor: default;
 	}
 }
 </style>

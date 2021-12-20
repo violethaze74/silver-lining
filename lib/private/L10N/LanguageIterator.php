@@ -45,7 +45,7 @@ class LanguageIterator implements ILanguageIterator {
 	/**
 	 * Rewind the Iterator to the first element
 	 */
-	public function rewind(): void {
+	public function rewind() {
 		$this->i = 0;
 	}
 
@@ -112,7 +112,7 @@ class LanguageIterator implements ILanguageIterator {
 	 *
 	 * @since 14.0.0
 	 */
-	public function next(): void {
+	public function next() {
 		++$this->i;
 	}
 

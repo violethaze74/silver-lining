@@ -31,7 +31,6 @@ use OCA\Files_External\NotFoundException;
 use OCA\Files_External\Service\GlobalStoragesService;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\DataResponse;
-use OCP\IConfig;
 use OCP\IGroupManager;
 use OCP\IL10N;
 use OCP\ILogger;
@@ -52,7 +51,6 @@ class GlobalStoragesController extends StoragesController {
 	 * @param ILogger $logger
 	 * @param IUserSession $userSession
 	 * @param IGroupManager $groupManager
-	 * @param IConfig $config
 	 */
 	public function __construct(
 		$AppName,
@@ -61,8 +59,7 @@ class GlobalStoragesController extends StoragesController {
 		GlobalStoragesService $globalStoragesService,
 		ILogger $logger,
 		IUserSession $userSession,
-		IGroupManager $groupManager,
-		IConfig $config
+		IGroupManager $groupManager
 	) {
 		parent::__construct(
 			$AppName,
@@ -71,8 +68,7 @@ class GlobalStoragesController extends StoragesController {
 			$globalStoragesService,
 			$logger,
 			$userSession,
-			$groupManager,
-			$config
+			$groupManager
 		);
 	}
 
@@ -100,16 +96,6 @@ class GlobalStoragesController extends StoragesController {
 		$applicableGroups,
 		$priority
 	) {
-		$canCreateNewLocalStorage = $this->config->getSystemValue('files_external_allow_create_new_local', true);
-		if (!$canCreateNewLocalStorage && $backend === 'local') {
-			return new DataResponse(
-				[
-					'message' => $this->l10n->t('Forbidden to manage local mounts')
-				],
-				Http::STATUS_FORBIDDEN
-			);
-		}
-
 		$newStorage = $this->createStorage(
 			$mountPoint,
 			$backend,

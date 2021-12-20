@@ -57,8 +57,9 @@ abstract class ATemplate implements JsonSerializable {
 
 	/**
 	 * @since 18.0.0
+	 * @return array|mixed
 	 */
-	public function jsonSerialize(): array {
+	public function jsonSerialize() {
 		return [
 			'id' => $this->getId(),
 			'title' => $this->getTitle(),

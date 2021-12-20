@@ -47,7 +47,6 @@ interface IConfig {
 	 *
 	 * @param array $configs Associative array with `key => value` pairs
 	 *                       If value is null, the config key will be deleted
-	 * @throws HintException if config file is read-only
 	 * @since 8.0.0
 	 */
 	public function setSystemValues(array $configs);
@@ -57,7 +56,6 @@ interface IConfig {
 	 *
 	 * @param string $key the key of the value, under which will be saved
 	 * @param mixed $value the value that should be stored
-	 * @throws HintException if config file is read-only
 	 * @since 8.0.0
 	 */
 	public function setSystemValue($key, $value);

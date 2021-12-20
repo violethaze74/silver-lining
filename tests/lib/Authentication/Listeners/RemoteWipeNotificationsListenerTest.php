@@ -38,7 +38,7 @@ use OCP\Notification\INotification;
 use PHPUnit\Framework\MockObject\MockObject;
 use Test\TestCase;
 
-class RemoteWipeNotificationsListenerTest extends TestCase {
+class RemoteWipeNotificationListenerTests extends TestCase {
 
 	/** @var INotificationManager|MockObject */
 	private $notificationManager;

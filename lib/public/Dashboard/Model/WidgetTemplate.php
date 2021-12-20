@@ -312,8 +312,10 @@ final class WidgetTemplate implements JsonSerializable {
 	/**
 	 * @since 15.0.0
 	 * @deprecated 20.0.0
+	 *
+	 * @return array
 	 */
-	public function jsonSerialize(): array {
+	public function jsonSerialize() {
 		return [
 			'icon' => $this->getIcon(),
 			'css' => $this->getCss(),

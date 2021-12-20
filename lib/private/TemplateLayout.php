@@ -82,6 +82,10 @@ class TemplateLayout extends \OC_Template {
 		/** @var IInitialStateService */
 		$this->initialState = \OC::$server->get(IInitialStateService::class);
 
+		if (\OC_Util::isIe()) {
+			Util::addStyle('ie');
+		}
+
 		// Decide which page we show
 		if ($renderAs === TemplateResponse::RENDER_AS_USER) {
 			/** @var INavigationManager */
@@ -96,7 +100,7 @@ class TemplateLayout extends \OC_Template {
 
 			$this->initialState->provideInitialState('core', 'active-app', $this->navigationManager->getActiveEntry());
 			$this->initialState->provideInitialState('unified-search', 'limit-default', SearchQuery::LIMIT_DEFAULT);
-			Util::addScript('core', 'dist/unified-search', 'core');
+			Util::addScript('dist/unified-search', null, true);
 
 			// Add navigation entry
 			$this->assign('application', '');
@@ -209,7 +213,7 @@ class TemplateLayout extends \OC_Template {
 		}
 
 		// Add the js files
-		$jsFiles = self::findJavascriptFiles(array_merge(\OC_Util::$scripts, Util::getScripts()));
+		$jsFiles = self::findJavascriptFiles(\OC_Util::$scripts);
 		$this->assign('jsfiles', []);
 		if ($this->config->getSystemValue('installed', false) && $renderAs != TemplateResponse::RENDER_AS_ERROR) {
 			// this is on purpose outside of the if statement below so that the initial state is prefilled (done in the getConfig() call)

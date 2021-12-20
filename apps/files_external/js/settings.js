@@ -659,7 +659,6 @@ MountConfigListView.prototype = _.extend({
 		}
 
 		this._encryptionEnabled = options.encryptionEnabled;
-		this._canCreateLocal = options.canCreateLocal;
 
 		// read the backend config that was carefully crammed
 		// into the data-configurations attribute of the select
@@ -826,13 +825,10 @@ MountConfigListView.prototype = _.extend({
 		$tr.addClass(backend.identifier);
 		$tr.find('.backend').data('identifier', backend.identifier);
 
-		if (backend.invalid || (backend.identifier === 'local' && !this._canCreateLocal)) {
+		if (backend.invalid) {
 			$tr.find('[name=mountPoint]').prop('disabled', true);
 			$tr.find('.applicable,.mountOptionsToggle').empty();
-			$tr.find('.save').empty();
-			if (backend.invalid) {
-				this.updateStatus($tr, false, 'Unknown backend: ' + backend.name);
-			}
+			this.updateStatus($tr, false, 'Unknown backend: ' + backend.name);
 			return $tr;
 		}
 
@@ -911,14 +907,6 @@ MountConfigListView.prototype = _.extend({
 	loadStorages: function() {
 		var self = this;
 
-		var onLoaded1 = $.Deferred();
-		var onLoaded2 = $.Deferred();
-
-		this.$el.find('.externalStorageLoading').removeClass('hidden');
-		$.when(onLoaded1, onLoaded2).always(() => {
-			self.$el.find('.externalStorageLoading').addClass('hidden');
-		})
-
 		if (this._isPersonal) {
 			// load userglobal storages
 			$.ajax({
@@ -965,11 +953,8 @@ MountConfigListView.prototype = _.extend({
 						$('#emptycontent').show();
 					}
 					onCompletion.resolve();
-					onLoaded1.resolve();
 				}
 			});
-		} else {
-			onLoaded1.resolve();
 		}
 
 		var url = this._storageConfigClass.prototype._url;
@@ -985,11 +970,9 @@ MountConfigListView.prototype = _.extend({
 					var storageConfig = new self._storageConfigClass();
 					_.extend(storageConfig, storageParams);
 					var $tr = self.newStorage(storageConfig, onCompletion);
-
 					self.recheckStorageConfig($tr);
 				});
 				onCompletion.resolve();
-				onLoaded2.resolve();
 			}
 		});
 	},
@@ -1330,11 +1313,9 @@ MountConfigListView.prototype = _.extend({
 
 window.addEventListener('DOMContentLoaded', function() {
 	var enabled = $('#files_external').attr('data-encryption-enabled');
-	var canCreateLocal = $('#files_external').attr('data-can-create-local');
 	var encryptionEnabled = (enabled ==='true')? true: false;
 	var mountConfigListView = new MountConfigListView($('#externalStorage'), {
-		encryptionEnabled: encryptionEnabled,
-		canCreateLocal: (canCreateLocal === 'true') ? true: false,
+		encryptionEnabled: encryptionEnabled
 	});
 	mountConfigListView.loadStorages();
 

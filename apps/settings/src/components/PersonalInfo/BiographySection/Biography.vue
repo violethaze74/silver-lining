@@ -137,9 +137,7 @@ export default {
 		font-family: var(--font-face);
 		cursor: text;
 
-		&:hover,
-		&:focus,
-		&:active {
+		&:hover {
 			border-color: var(--color-primary-element) !important;
 			outline: none !important;
 		}

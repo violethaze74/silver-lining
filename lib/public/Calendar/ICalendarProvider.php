@@ -36,8 +36,8 @@ namespace OCP\Calendar;
 interface ICalendarProvider {
 
 	/**
-	 * @param string $principalUri URI of the principal
-	 * @param string[] $calendarUris optionally specify which calendars to load, or all if this array is empty
+	 * @param string $principalUri
+	 * @param string[] $calendarUris
 	 * @return ICalendar[]
 	 * @since 23.0.0
 	 */

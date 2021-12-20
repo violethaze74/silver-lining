@@ -9,7 +9,7 @@
 namespace Test\Http\Client;
 
 use GuzzleHttp\Psr7\Response as GuzzleResponse;
-use GuzzleHttp\Psr7\Utils;
+use function GuzzleHttp\Psr7\stream_for;
 use OC\Http\Client\Response;
 
 /**
@@ -25,7 +25,7 @@ class ResponseTest extends \Test\TestCase {
 	}
 
 	public function testGetBody() {
-		$response = new Response($this->guzzleResponse->withBody(Utils::streamFor('MyResponse')));
+		$response = new Response($this->guzzleResponse->withBody(stream_for('MyResponse')));
 		$this->assertSame('MyResponse', $response->getBody());
 	}
 

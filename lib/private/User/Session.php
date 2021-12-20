@@ -123,7 +123,7 @@ class Session implements IUserSession, Emitter {
 	 * @param Manager $manager
 	 * @param ISession $session
 	 * @param ITimeFactory $timeFactory
-	 * @param IProvider|null $tokenProvider
+	 * @param IProvider $tokenProvider
 	 * @param IConfig $config
 	 * @param ISecureRandom $random
 	 * @param ILockdownManager $lockdownManager
@@ -132,7 +132,7 @@ class Session implements IUserSession, Emitter {
 	public function __construct(Manager $manager,
 								ISession $session,
 								ITimeFactory $timeFactory,
-								?IProvider $tokenProvider,
+								$tokenProvider,
 								IConfig $config,
 								ISecureRandom $random,
 								ILockdownManager $lockdownManager,
@@ -750,7 +750,6 @@ class Session implements IUserSession, Emitter {
 			}
 
 			$dbToken->setLastCheck($now);
-			$this->tokenProvider->updateToken($dbToken);
 			return true;
 		}
 
@@ -768,7 +767,6 @@ class Session implements IUserSession, Emitter {
 		}
 
 		$dbToken->setLastCheck($now);
-		$this->tokenProvider->updateToken($dbToken);
 		return true;
 	}
 

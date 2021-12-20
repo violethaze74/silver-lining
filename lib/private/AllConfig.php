@@ -260,10 +260,6 @@ class AllConfig implements \OCP\IConfig {
 		// TODO - FIXME
 		$this->fixDIInit();
 
-		if ($appName === 'settings' && $key === 'email') {
-			$value = strtolower((string) $value);
-		}
-
 		$prevValue = $this->getUserValue($userId, $appName, $key, null);
 
 		if ($prevValue !== null) {
@@ -518,22 +514,17 @@ class AllConfig implements \OCP\IConfig {
 		// TODO - FIXME
 		$this->fixDIInit();
 
-		if ($appName === 'settings' && $key === 'email') {
-			// Email address is always stored lowercase in the database
-			return $this->getUsersForUserValue($appName, $key, strtolower($value));
-		}
-
 		$sql = 'SELECT `userid` FROM `*PREFIX*preferences` ' .
 			'WHERE `appid` = ? AND `configkey` = ? ';
 
 		if ($this->getSystemValue('dbtype', 'sqlite') === 'oci') {
 			//oracle hack: need to explicitly cast CLOB to CHAR for comparison
-			$sql .= 'AND LOWER(to_char(`configvalue`)) = ?';
+			$sql .= 'AND LOWER(to_char(`configvalue`)) = LOWER(?)';
 		} else {
-			$sql .= 'AND LOWER(`configvalue`) = ?';
+			$sql .= 'AND LOWER(`configvalue`) = LOWER(?)';
 		}
 
-		$result = $this->connection->executeQuery($sql, [$appName, $key, strtolower($value)]);
+		$result = $this->connection->executeQuery($sql, [$appName, $key, $value]);
 
 		$userIDs = [];
 		while ($row = $result->fetch()) {

@@ -87,9 +87,6 @@ class Manager {
 	/** @var EventDispatcherInterface */
 	private $legacyDispatcher;
 
-	/** @psalm-var array<string, bool> */
-	private $userIsTwoFactorAuthenticated = [];
-
 	public function __construct(ProviderLoader $providerLoader,
 								IRegistry $providerRegistry,
 								MandatoryTwoFactor $mandatoryTwoFactor,
@@ -121,10 +118,6 @@ class Manager {
 	 * @return boolean
 	 */
 	public function isTwoFactorAuthenticated(IUser $user): bool {
-		if (isset($this->userIsTwoFactorAuthenticated[$user->getUID()])) {
-			return $this->userIsTwoFactorAuthenticated[$user->getUID()];
-		}
-
 		if ($this->mandatoryTwoFactor->isEnforcedFor($user)) {
 			return true;
 		}
@@ -136,8 +129,7 @@ class Manager {
 		$providerIds = array_keys($enabled);
 		$providerIdsWithoutBackupCodes = array_diff($providerIds, [self::BACKUP_CODES_PROVIDER_ID]);
 
-		$this->userIsTwoFactorAuthenticated[$user->getUID()] = !empty($providerIdsWithoutBackupCodes);
-		return $this->userIsTwoFactorAuthenticated[$user->getUID()];
+		return !empty($providerIdsWithoutBackupCodes);
 	}
 
 	/**

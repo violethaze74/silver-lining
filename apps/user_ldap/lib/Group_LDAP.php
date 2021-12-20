@@ -83,7 +83,7 @@ class Group_LDAP extends BackendUtility implements GroupInterface, IGroupLDAP, I
 		$this->cachedNestedGroups = new CappedMemoryCache();
 		$this->groupPluginManager = $groupPluginManager;
 		$this->logger = OC::$server->get(LoggerInterface::class);
-		$this->ldapGroupMemberAssocAttr = strtolower((string)$gAssoc);
+		$this->ldapGroupMemberAssocAttr = strtolower($gAssoc);
 	}
 
 	/**
@@ -202,7 +202,7 @@ class Group_LDAP extends BackendUtility implements GroupInterface, IGroupLDAP, I
 	 * @throws ServerNotAvailableException
 	 */
 	public function getDynamicGroupMembers(string $dnGroup): array {
-		$dynamicGroupMemberURL = strtolower((string)$this->access->connection->ldapDynamicGroupMemberURL);
+		$dynamicGroupMemberURL = strtolower($this->access->connection->ldapDynamicGroupMemberURL);
 
 		if (empty($dynamicGroupMemberURL)) {
 			return [];
@@ -1312,7 +1312,7 @@ class Group_LDAP extends BackendUtility implements GroupInterface, IGroupLDAP, I
 	 * of the current access.
 	 *
 	 * @param string $gid
-	 * @return resource|\LDAP\Connection The LDAP connection
+	 * @return resource of the LDAP connection
 	 * @throws ServerNotAvailableException
 	 */
 	public function getNewLDAPConnection($gid) {

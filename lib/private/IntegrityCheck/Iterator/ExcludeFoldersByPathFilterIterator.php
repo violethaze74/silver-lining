@@ -59,7 +59,10 @@ class ExcludeFoldersByPathFilterIterator extends \RecursiveFilterIterator {
 		$this->excludedFolders = array_merge($excludedFolders, $appFolders);
 	}
 
-	public function accept(): bool {
+	/**
+	 * @return bool
+	 */
+	public function accept() {
 		return !\in_array(
 			$this->current()->getPathName(),
 			$this->excludedFolders,

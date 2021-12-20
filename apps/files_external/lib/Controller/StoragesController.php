@@ -39,7 +39,6 @@ use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\DataResponse;
 use OCP\Files\StorageNotAvailableException;
-use OCP\IConfig;
 use OCP\IGroupManager;
 use OCP\IL10N;
 use OCP\ILogger;
@@ -81,11 +80,6 @@ abstract class StoragesController extends Controller {
 	protected $groupManager;
 
 	/**
-	 * @var IConfig
-	 */
-	protected $config;
-
-	/**
 	 * Creates a new storages controller.
 	 *
 	 * @param string $AppName application name
@@ -101,8 +95,7 @@ abstract class StoragesController extends Controller {
 		StoragesService $storagesService,
 		ILogger $logger,
 		IUserSession $userSession,
-		IGroupManager $groupManager,
-		IConfig $config
+		IGroupManager $groupManager
 	) {
 		parent::__construct($AppName, $request);
 		$this->l10n = $l10n;
@@ -110,7 +103,6 @@ abstract class StoragesController extends Controller {
 		$this->logger = $logger;
 		$this->userSession = $userSession;
 		$this->groupManager = $groupManager;
-		$this->config = $config;
 	}
 
 	/**
@@ -137,16 +129,6 @@ abstract class StoragesController extends Controller {
 		$applicableGroups = null,
 		$priority = null
 	) {
-		$canCreateNewLocalStorage = $this->config->getSystemValue('files_external_allow_create_new_local', true);
-		if (!$canCreateNewLocalStorage && $backend === 'local') {
-			return new DataResponse(
-				[
-					'message' => $this->l10n->t('Forbidden to manage local mounts')
-				],
-				Http::STATUS_FORBIDDEN
-			);
-		}
-
 		try {
 			return $this->service->createStorage(
 				$mountPoint,

@@ -31,7 +31,6 @@ use OCA\Files_External\Controller\UserStoragesController;
 use OCA\Files_External\Lib\StorageConfig;
 use OCA\Files_External\Service\BackendService;
 use OCP\AppFramework\Http;
-use OCP\IConfig;
 use OCP\IGroupManager;
 use OCP\IL10N;
 use OCP\ILogger;
@@ -55,34 +54,19 @@ class UserStoragesControllerTest extends StoragesControllerTest {
 		$this->service->method('getVisibilityType')
 			->willReturn(BackendService::VISIBILITY_PERSONAL);
 
-		$this->controller = $this->createController(true);
-	}
-
-	private function createController($allowCreateLocal = true) {
 		$session = $this->createMock(IUserSession::class);
 		$session->method('getUser')
 			->willReturn(new User('test', null, $this->createMock(EventDispatcherInterface::class)));
 
-		$config = $this->createMock(IConfig::class);
-		$config->method('getSystemValue')
-			->with('files_external_allow_create_new_local', true)
-			->willReturn($allowCreateLocal);
-
-		return new UserStoragesController(
+		$this->controller = new UserStoragesController(
 			'files_external',
 			$this->createMock(IRequest::class),
 			$this->createMock(IL10N::class),
 			$this->service,
 			$this->createMock(ILogger::class),
 			$session,
-			$this->createMock(IGroupManager::class),
-			$config
+			$this->createMock(IGroupManager::class)
 		);
-	}
-
-	public function testAddLocalStorageWhenDisabled() {
-		$this->controller = $this->createController(false);
-		parent::testAddLocalStorageWhenDisabled();
 	}
 
 	public function testAddOrUpdateStorageDisallowedBackend() {

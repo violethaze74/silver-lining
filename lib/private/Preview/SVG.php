@@ -69,7 +69,7 @@ class SVG extends ProviderV2 {
 
 		//new image object
 		$image = new \OC_Image();
-		$image->loadFromData((string) $svg);
+		$image->loadFromData($svg);
 		//check if image object is valid
 		if ($image->valid()) {
 			$image->scaleDownToFit($maxX, $maxY);

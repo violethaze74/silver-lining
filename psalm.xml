@@ -81,8 +81,6 @@
 			<errorLevel type="suppress">
 				<referencedClass name="OCA\GroupFolders\Mount\GroupFolderStorage"/>
 				<referencedClass name="OCA\TwoFactorNextcloudNotification\Controller\APIController"/>
-				<!-- Classes from PHP>=8 (needed to be able to use \GdImage::class) -->
-				<referencedClass name="GdImage" />
 			</errorLevel>
 		</UndefinedClass>
 		<UndefinedFunction>
@@ -126,11 +124,6 @@
 				<!-- Helper classes for sharing API integration from other apps -->
 				<referencedClass name="OCA\Deck\Sharing\ShareAPIHelper" />
 				<referencedClass name="OCA\Talk\Share\Helper\DeletedShareAPIController" />
-				<!-- Classes from PHP>=8 -->
-				<referencedClass name="GdImage" />
-				<referencedClass name="LDAP\Connection" />
-				<referencedClass name="LDAP\Result" />
-				<referencedClass name="LDAP\ResultEntry" />
 			</errorLevel>
 		</UndefinedDocblockClass>
 	</issueHandlers>

@@ -37,22 +37,18 @@ class CacheEntry implements ICacheEntry {
 		$this->data = $data;
 	}
 
-	public function offsetSet($offset, $value): void {
+	public function offsetSet($offset, $value) {
 		$this->data[$offset] = $value;
 	}
 
-	public function offsetExists($offset): bool {
+	public function offsetExists($offset) {
 		return isset($this->data[$offset]);
 	}
 
-	public function offsetUnset($offset): void {
+	public function offsetUnset($offset) {
 		unset($this->data[$offset]);
 	}
 
-	/**
-	 * @return mixed
-	 */
-	#[\ReturnTypeWillChange]
 	public function offsetGet($offset) {
 		if (isset($this->data[$offset])) {
 			return $this->data[$offset];

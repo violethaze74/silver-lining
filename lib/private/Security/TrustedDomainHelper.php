@@ -31,9 +31,13 @@ namespace OC\Security;
 
 use OC\AppFramework\Http\Request;
 use OCP\IConfig;
-use OCP\Security\ITrustedDomainHelper;
 
-class TrustedDomainHelper implements ITrustedDomainHelper {
+/**
+ * Class TrustedDomain
+ *
+ * @package OC\Security
+ */
+class TrustedDomainHelper {
 	/** @var IConfig */
 	private $config;
 
@@ -61,23 +65,13 @@ class TrustedDomainHelper implements ITrustedDomainHelper {
 	}
 
 	/**
-	 * {@inheritDoc}
-	 */
-	public function isTrustedUrl(string $url): bool {
-		$parsedUrl = parse_url($url);
-		if (empty($parsedUrl['host'])) {
-			return false;
-		}
-
-		if (isset($parsedUrl['port']) && $parsedUrl['port']) {
-			return $this->isTrustedDomain($parsedUrl['host'] . ':' . $parsedUrl['port']);
-		}
-
-		return $this->isTrustedDomain($parsedUrl['host']);
-	}
-
-	/**
-	 * {@inheritDoc}
+	 * Checks whether a domain is considered as trusted from the list
+	 * of trusted domains. If no trusted domains have been configured, returns
+	 * true.
+	 * This is used to prevent Host Header Poisoning.
+	 * @param string $domainWithPort
+	 * @return bool true if the given domain is trusted or if no trusted domains
+	 * have been configured
 	 */
 	public function isTrustedDomain(string $domainWithPort): bool {
 		// overwritehost is always trusted

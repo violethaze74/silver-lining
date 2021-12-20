@@ -100,10 +100,7 @@ $canCreateMounts = $_['visibilityType'] === BackendService::VISIBILITY_ADMIN || 
 	<h2><?php p($l->t('No external storage configured or you don\'t have the permission to configure them')); ?></h2>
 </div>
 
-<?php
-	$canCreateNewLocalStorage = \OC::$server->getConfig()->getSystemValue('files_external_allow_create_new_local', true);
-?>
-<form data-can-create="<?php echo $canCreateMounts?'true':'false' ?>" data-can-create-local="<?php echo $canCreateNewLocalStorage?'true':'false' ?>" id="files_external" class="section" data-encryption-enabled="<?php echo $_['encryptionEnabled']?'true': 'false'; ?>">
+<form data-can-create="<?php echo $canCreateMounts?'true':'false' ?>" id="files_external" class="section" data-encryption-enabled="<?php echo $_['encryptionEnabled']?'true': 'false'; ?>">
 	<h2 class="inlineblock" data-anchor-name="external-storage"><?php p($l->t('External storage')); ?></h2>
 	<a target="_blank" rel="noreferrer" class="icon-info" title="<?php p($l->t('Open documentation'));?>" href="<?php p(link_to_docs('admin-external-storage')); ?>"></a>
 	<p class="settings-hint"><?php p($l->t('External storage enables you to mount external storage services and devices as secondary Nextcloud storage devices. You may also allow users to mount their own external storage services.')); ?></p>
@@ -127,11 +124,6 @@ $canCreateMounts = $_['visibilityType'] === BackendService::VISIBILITY_ADMIN || 
 			</tr>
 		</thead>
 		<tbody>
-			<tr class="externalStorageLoading">
-				<td colspan="8">
-					<span id="externalStorageLoading" class="icon icon-loading"></span>
-				</td>
-			</tr>
 			<tr id="addMountPoint"
 			<?php if (!$canCreateMounts): ?>
 				style="display: none;"
@@ -158,7 +150,7 @@ $canCreateMounts = $_['visibilityType'] === BackendService::VISIBILITY_ADMIN || 
 							});
 						?>
 						<?php foreach ($sortedBackends as $backend): ?>
-							<?php if ($backend->getDeprecateTo() || (!$canCreateNewLocalStorage && $backend->getIdentifier() == "local")) {
+							<?php if ($backend->getDeprecateTo()) {
 							continue;
 						} // ignore deprecated backends?>
 							<option value="<?php p($backend->getIdentifier()); ?>"><?php p($backend->getText()); ?></option>
@@ -215,7 +207,7 @@ $canCreateMounts = $_['visibilityType'] === BackendService::VISIBILITY_ADMIN || 
 	<form autocomplete="false" action="#"
 		  id="global_credentials" method="post">
 		<h2><?php p($l->t('Global credentials')); ?></h2>
-		<p class="settings-hint"><?php p($l->t('Global credentials can be used to authenticate with multiple external storages that have the same credentials.')); ?></p>
+		<p class="settings-hint"><?php p($l->t('Global credentials can be used to authenticate with multiple external storage that have the same credentials.')); ?></p>
 		<input type="text" name="username"
 			   autocomplete="false"
 			   value="<?php p($_['globalCredentials']['user']); ?>"

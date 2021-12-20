@@ -52,7 +52,8 @@ use bantu\IniGetWrapper\IniGetWrapper;
 use Exception;
 use InvalidArgumentException;
 use OC\App\AppStore\Bundles\BundleFetcher;
-use OC\Authentication\Token\PublicKeyTokenProvider;
+use OC\Authentication\Token\DefaultTokenCleanupJob;
+use OC\Authentication\Token\DefaultTokenProvider;
 use OC\Log\Rotate;
 use OC\Preview\BackgroundCleanupJob;
 use OCP\AppFramework\Utility\ITimeFactory;
@@ -431,8 +432,8 @@ class Setup {
 			// The token provider requires a working db, so it's not injected on setup
 			/* @var $userSession User\Session */
 			$userSession = \OC::$server->getUserSession();
-			$provider = \OC::$server->query(PublicKeyTokenProvider::class);
-			$userSession->setTokenProvider($provider);
+			$defaultTokenProvider = \OC::$server->query(DefaultTokenProvider::class);
+			$userSession->setTokenProvider($defaultTokenProvider);
 			$userSession->login($username, $password);
 			$userSession->createSessionToken($request, $userSession->getUser()->getUID(), $username, $password);
 
@@ -450,6 +451,7 @@ class Setup {
 
 	public static function installBackgroundJobs() {
 		$jobList = \OC::$server->getJobList();
+		$jobList->add(DefaultTokenCleanupJob::class);
 		$jobList->add(Rotate::class);
 		$jobList->add(BackgroundCleanupJob::class);
 	}
@@ -478,7 +480,7 @@ class Setup {
 			if (!filter_var($webRoot, FILTER_VALIDATE_URL)) {
 				throw new InvalidArgumentException('invalid value for overwrite.cli.url');
 			}
-			$webRoot = rtrim((parse_url($webRoot, PHP_URL_PATH) ?? ''), '/');
+			$webRoot = rtrim(parse_url($webRoot, PHP_URL_PATH), '/');
 		} else {
 			$webRoot = !empty(\OC::$WEBROOT) ? \OC::$WEBROOT : '/';
 		}
@@ -528,7 +530,7 @@ class Setup {
 			$content .= "\n  Options -MultiViews";
 			$content .= "\n  RewriteRule ^core/js/oc.js$ index.php [PT,E=PATH_INFO:$1]";
 			$content .= "\n  RewriteRule ^core/preview.png$ index.php [PT,E=PATH_INFO:$1]";
-			$content .= "\n  RewriteCond %{REQUEST_FILENAME} !\\.(css|js|svg|gif|png|html|ttf|woff2?|ico|jpg|jpeg|map|webm|mp4|mp3|ogg|wav|wasm|tflite)$";
+			$content .= "\n  RewriteCond %{REQUEST_FILENAME} !\\.(css|js|svg|gif|png|html|ttf|woff2?|ico|jpg|jpeg|map|webm|mp4|mp3|ogg|wav)$";
 			$content .= "\n  RewriteCond %{REQUEST_FILENAME} !/core/ajax/update\\.php";
 			$content .= "\n  RewriteCond %{REQUEST_FILENAME} !/core/img/(favicon\\.ico|manifest\\.json)$";
 			$content .= "\n  RewriteCond %{REQUEST_FILENAME} !/(cron|public|remote|status)\\.php";

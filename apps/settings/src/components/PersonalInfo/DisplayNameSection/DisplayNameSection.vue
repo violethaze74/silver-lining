@@ -33,6 +33,11 @@
 			<DisplayName
 				:display-name.sync="primaryDisplayName.value"
 				:scope.sync="primaryDisplayName.scope" />
+
+			<VisibilityDropdown
+				:param-id="accountPropertyId"
+				:display-id="accountProperty"
+				:visibility.sync="visibility" />
 		</template>
 
 		<span v-else>
@@ -46,12 +51,14 @@ import { loadState } from '@nextcloud/initial-state'
 
 import DisplayName from './DisplayName'
 import HeaderBar from '../shared/HeaderBar'
+import VisibilityDropdown from '../shared/VisibilityDropdown'
 
-import { ACCOUNT_PROPERTY_READABLE_ENUM } from '../../../constants/AccountPropertyConstants'
+import { ACCOUNT_PROPERTY_ENUM, ACCOUNT_PROPERTY_READABLE_ENUM } from '../../../constants/AccountPropertyConstants'
 import { validateStringInput } from '../../../utils/validate'
 
 const { displayNameMap: { primaryDisplayName } } = loadState('settings', 'personalInfoParameters', {})
 const { displayNameChangeSupported } = loadState('settings', 'accountParameters', {})
+const { profileConfig: { displayname: { visibility } } } = loadState('settings', 'profileParameters', {})
 
 export default {
 	name: 'DisplayNameSection',
@@ -59,13 +66,16 @@ export default {
 	components: {
 		DisplayName,
 		HeaderBar,
+		VisibilityDropdown,
 	},
 
 	data() {
 		return {
 			accountProperty: ACCOUNT_PROPERTY_READABLE_ENUM.DISPLAYNAME,
+			accountPropertyId: ACCOUNT_PROPERTY_ENUM.DISPLAYNAME,
 			displayNameChangeSupported,
 			primaryDisplayName,
+			visibility,
 		}
 	},
 

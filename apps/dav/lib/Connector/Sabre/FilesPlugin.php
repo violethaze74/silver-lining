@@ -391,12 +391,11 @@ class FilesPlugin extends ServerPlugin {
 					$user->getUID()
 				);
 			});
+		}
 
+		if ($node instanceof \OCA\DAV\Connector\Sabre\Node) {
 			$propFind->handle(self::DATA_FINGERPRINT_PROPERTYNAME, function () use ($node) {
 				return $this->config->getSystemValue('data-fingerprint', '');
-			});
-			$propFind->handle(self::CREATION_TIME_PROPERTYNAME, function () use ($node) {
-				return $node->getFileInfo()->getCreationTime();
 			});
 		}
 
@@ -422,6 +421,10 @@ class FilesPlugin extends ServerPlugin {
 				}
 
 				return new ChecksumList($checksum);
+			});
+
+			$propFind->handle(self::CREATION_TIME_PROPERTYNAME, function () use ($node) {
+				return $node->getFileInfo()->getCreationTime();
 			});
 
 			$propFind->handle(self::UPLOAD_TIME_PROPERTYNAME, function () use ($node) {

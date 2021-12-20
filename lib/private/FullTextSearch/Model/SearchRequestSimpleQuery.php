@@ -168,9 +168,10 @@ final class SearchRequestSimpleQuery implements ISearchRequestSimpleQuery, JsonS
 
 
 	/**
+	 * @return array|mixed
 	 * @since 17.0.0
 	 */
-	public function jsonSerialize(): array {
+	public function jsonSerialize() {
 		return [
 			'type' => $this->getType(),
 			'field' => $this->getField(),

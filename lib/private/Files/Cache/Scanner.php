@@ -37,8 +37,6 @@ namespace OC\Files\Cache;
 
 use Doctrine\DBAL\Exception;
 use OC\Files\Filesystem;
-use OC\Files\Storage\Wrapper\Jail;
-use OC\Files\Storage\Wrapper\Encoding;
 use OC\Hooks\BasicEmitter;
 use OCP\Files\Cache\IScanner;
 use OCP\Files\ForbiddenException;
@@ -421,16 +419,7 @@ class Scanner extends BasicEmitter implements IScanner {
 			if ($permissions === 0) {
 				continue;
 			}
-			$originalFile = $fileMeta['name'];
-			$file = trim(\OC\Files\Filesystem::normalizePath($originalFile), '/');
-			if (trim($originalFile, '/') !== $file) {
-				// encoding mismatch, might require compatibility wrapper
-				\OC::$server->getLogger()->debug('Scanner: Skipping non-normalized file name "'. $originalFile . '" in path "' . $path . '".', ['app' => 'core']);
-				$this->emit('\OC\Files\Cache\Scanner', 'normalizedNameMismatch', [$path ? $path . '/' . $originalFile : $originalFile]);
-				// skip this entry
-				continue;
-			}
-
+			$file = $fileMeta['name'];
 			$newChildNames[] = $file;
 			$child = $path ? $path . '/' . $file : $file;
 			try {
@@ -510,31 +499,19 @@ class Scanner extends BasicEmitter implements IScanner {
 	 * walk over any folders that are not fully scanned yet and scan them
 	 */
 	public function backgroundScan() {
-		if ($this->storage->instanceOfStorage(Jail::class)) {
-			// for jail storage wrappers (shares, groupfolders) we run the background scan on the source storage
-			// this is mainly done because the jail wrapper doesn't implement `getIncomplete` (because it would be inefficient).
-			//
-			// Running the scan on the source storage might scan more than "needed", but the unscanned files outside the jail will
-			// have to be scanned at some point anyway.
-			$unJailedScanner = $this->storage->getUnjailedStorage()->getScanner();
-			$unJailedScanner->backgroundScan();
+		if (!$this->cache->inCache('')) {
+			$this->runBackgroundScanJob(function () {
+				$this->scan('', self::SCAN_RECURSIVE, self::REUSE_ETAG);
+			}, '');
 		} else {
-			if (!$this->cache->inCache('')) {
-				// if the storage isn't in the cache yet, just scan the root completely
-				$this->runBackgroundScanJob(function () {
-					$this->scan('', self::SCAN_RECURSIVE, self::REUSE_ETAG);
-				}, '');
-			} else {
-				$lastPath = null;
-				// find any path marked as unscanned and run the scanner until no more paths are unscanned (or we get stuck)
-				while (($path = $this->cache->getIncomplete()) !== false && $path !== $lastPath) {
-					$this->runBackgroundScanJob(function () use ($path) {
-						$this->scan($path, self::SCAN_RECURSIVE_INCOMPLETE, self::REUSE_ETAG | self::REUSE_SIZE);
-					}, $path);
-					// FIXME: this won't proceed with the next item, needs revamping of getIncomplete()
-					// to make this possible
-					$lastPath = $path;
-				}
+			$lastPath = null;
+			while (($path = $this->cache->getIncomplete()) !== false && $path !== $lastPath) {
+				$this->runBackgroundScanJob(function () use ($path) {
+					$this->scan($path, self::SCAN_RECURSIVE_INCOMPLETE, self::REUSE_ETAG | self::REUSE_SIZE);
+				}, $path);
+				// FIXME: this won't proceed with the next item, needs revamping of getIncomplete()
+				// to make this possible
+				$lastPath = $path;
 			}
 		}
 	}
