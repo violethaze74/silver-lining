@@ -54,7 +54,7 @@ class AccountProperty implements IAccountProperty {
 		$this->verificationData = $verificationData;
 	}
 
-	public function jsonSerialize(): array {
+	public function jsonSerialize() {
 		return [
 			'name' => $this->getName(),
 			'value' => $this->getValue(),

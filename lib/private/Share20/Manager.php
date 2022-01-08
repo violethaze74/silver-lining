@@ -43,7 +43,6 @@ namespace OC\Share20;
 
 use OC\Cache\CappedMemoryCache;
 use OC\Files\Mount\MoveableMount;
-use OC\KnownUser\KnownUserService;
 use OC\Share20\Exception\ProviderException;
 use OCA\Files_Sharing\AppInfo\Application;
 use OCA\Files_Sharing\ISharedStorage;
@@ -119,10 +118,7 @@ class Manager implements IManager {
 	private $defaults;
 	/** @var IEventDispatcher */
 	private $dispatcher;
-	/** @var IUserSession */
 	private $userSession;
-	/** @var KnownUserService */
-	private $knownUserService;
 
 	public function __construct(
 		ILogger $logger,
@@ -141,8 +137,7 @@ class Manager implements IManager {
 		IURLGenerator $urlGenerator,
 		\OC_Defaults $defaults,
 		IEventDispatcher $dispatcher,
-		IUserSession $userSession,
-		KnownUserService $knownUserService
+		IUserSession $userSession
 	) {
 		$this->logger = $logger;
 		$this->config = $config;
@@ -165,7 +160,6 @@ class Manager implements IManager {
 		$this->defaults = $defaults;
 		$this->dispatcher = $dispatcher;
 		$this->userSession = $userSession;
-		$this->knownUserService = $knownUserService;
 	}
 
 	/**
@@ -852,8 +846,7 @@ class Manager implements IManager {
 							$this->urlGenerator->linkToRouteAbsolute('files_sharing.Accept.accept', ['shareId' => $share->getFullId()]),
 							$share->getSharedBy(),
 							$emailAddress,
-							$share->getExpirationDate(),
-							$share->getNote()
+							$share->getExpirationDate()
 						);
 						$this->logger->debug('Sent share notification to ' . $emailAddress . ' for share with ID ' . $share->getId(), ['app' => 'share']);
 					} else {
@@ -887,8 +880,7 @@ class Manager implements IManager {
 											$link,
 											$initiator,
 											$shareWith,
-											\DateTime $expiration = null,
-											$note = '') {
+											\DateTime $expiration = null) {
 		$initiatorUser = $this->userManager->get($initiator);
 		$initiatorDisplayName = ($initiatorUser instanceof IUser) ? $initiatorUser->getDisplayName() : $initiator;
 
@@ -906,10 +898,6 @@ class Manager implements IManager {
 		$emailTemplate->addHeader();
 		$emailTemplate->addHeading($l->t('%1$s shared »%2$s« with you', [$initiatorDisplayName, $filename]), false);
 		$text = $l->t('%1$s shared »%2$s« with you.', [$initiatorDisplayName, $filename]);
-
-		if ($note !== '') {
-			$emailTemplate->addBodyText(htmlspecialchars($note), $note);
-		}
 
 		$emailTemplate->addBodyText(
 			htmlspecialchars($text . ' ' . $l->t('Click the button below to open it.')),
@@ -1919,42 +1907,6 @@ class Manager implements IManager {
 
 	public function allowEnumerationFullMatch(): bool {
 		return $this->config->getAppValue('core', 'shareapi_restrict_user_enumeration_full_match', 'yes') === 'yes';
-	}
-
-	public function currentUserCanEnumerateTargetUser(?IUser $currentUser, IUser $targetUser): bool {
-		if ($this->allowEnumerationFullMatch()) {
-			return true;
-		}
-
-		if (!$this->allowEnumeration()) {
-			return false;
-		}
-
-		if (!$this->limitEnumerationToPhone() && !$this->limitEnumerationToGroups()) {
-			// Enumeration is enabled and not restricted: OK
-			return true;
-		}
-
-		if (!$currentUser instanceof IUser) {
-			// Enumeration restrictions require an account
-			return false;
-		}
-
-		// Enumeration is limited to phone match
-		if ($this->limitEnumerationToPhone() && $this->knownUserService->isKnownToUser($currentUser->getUID(), $targetUser->getUID())) {
-			return true;
-		}
-
-		// Enumeration is limited to groups
-		if ($this->limitEnumerationToGroups()) {
-			$currentUserGroupIds = $this->groupManager->getUserGroupIds($currentUser);
-			$targetUserGroupIds = $this->groupManager->getUserGroupIds($targetUser);
-			if (!empty(array_intersect($currentUserGroupIds, $targetUserGroupIds))) {
-				return true;
-			}
-		}
-
-		return false;
 	}
 
 	/**

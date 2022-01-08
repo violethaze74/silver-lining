@@ -74,9 +74,6 @@ use Psr\Log\LoggerInterface;
  * @property string ldapMatchingRuleInChainState
  */
 class Connection extends LDAPUtility {
-	/**
-	 * @var resource|\LDAP\Connection|null
-	 */
 	private $ldapConnectionRes = null;
 	private $configPrefix;
 	private $configID;
@@ -205,7 +202,7 @@ class Connection extends LDAPUtility {
 	}
 
 	/**
-	 * @return resource|\LDAP\Connection The LDAP resource
+	 * Returns the LDAP handler
 	 */
 	public function getConnectionResource() {
 		if (!$this->ldapConnectionRes) {
@@ -411,7 +408,7 @@ class Connection extends LDAPUtility {
 			}
 		}
 
-		if ((stripos((string)$this->configuration->ldapHost, 'ldaps://') === 0)
+		if ((stripos($this->configuration->ldapHost, 'ldaps://') === 0)
 			&& $this->configuration->ldapTLS) {
 			$this->configuration->ldapTLS = false;
 			$this->logger->info(
@@ -490,7 +487,7 @@ class Connection extends LDAPUtility {
 			$configurationOK = false;
 		}
 
-		if (mb_strpos((string)$this->configuration->ldapLoginFilter, '%uid', 0, 'UTF-8')
+		if (mb_strpos($this->configuration->ldapLoginFilter, '%uid', 0, 'UTF-8')
 		   === false) {
 			$this->logger->warning(
 				$errorStr.'login filter does not contain %uid place holder.',

@@ -643,15 +643,15 @@ class ManagerTest extends TestCase {
 		$countBefore = $count;
 
 		//Add test users
-		$user1 = $manager->createUser('testseen1', 'testseen10');
+		$user1 = $manager->createUser('testseen1', 'testseen1');
 		$user1->updateLastLoginTimestamp();
 
-		$user2 = $manager->createUser('testseen2', 'testseen20');
+		$user2 = $manager->createUser('testseen2', 'testseen2');
 		$user2->updateLastLoginTimestamp();
 
-		$user3 = $manager->createUser('testseen3', 'testseen30');
+		$user3 = $manager->createUser('testseen3', 'testseen3');
 
-		$user4 = $manager->createUser('testseen4', 'testseen40');
+		$user4 = $manager->createUser('testseen4', 'testseen4');
 		$user4->updateLastLoginTimestamp();
 
 		$count = 0;
@@ -667,19 +667,7 @@ class ManagerTest extends TestCase {
 	}
 
 	public function testDeleteUser() {
-		$config = $this->getMockBuilder(AllConfig::class)
-			->disableOriginalConstructor()
-			->getMock();
-		$config
-			->expects($this->any())
-			->method('getUserValue')
-			->willReturnArgument(3);
-		$config
-			->expects($this->any())
-			->method('getAppValue')
-			->willReturnArgument(2);
-
-		$manager = new \OC\User\Manager($config, $this->oldDispatcher, $this->cacheFactory, $this->eventDispatcher);
+		$manager = new \OC\User\Manager($this->config, $this->oldDispatcher, $this->cacheFactory, $this->eventDispatcher);
 		$backend = new \Test\Util\User\Dummy();
 
 		$manager->registerBackend($backend);

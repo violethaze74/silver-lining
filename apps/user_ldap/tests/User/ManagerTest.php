@@ -32,6 +32,7 @@ use OCA\User_LDAP\Access;
 use OCA\User_LDAP\Connection;
 use OCA\User_LDAP\FilesystemHelper;
 use OCA\User_LDAP\ILDAPWrapper;
+use OCA\User_LDAP\LogWrapper;
 use OCA\User_LDAP\User\Manager;
 use OCA\User_LDAP\User\User;
 use OCP\IAvatarManager;
@@ -41,7 +42,6 @@ use OCP\Image;
 use OCP\IUserManager;
 use OCP\Notification\IManager as INotificationManager;
 use OCP\Share\IManager;
-use Psr\Log\LoggerInterface;
 
 /**
  * Class Test_User_Manager
@@ -60,8 +60,8 @@ class ManagerTest extends \Test\TestCase {
 	/** @var FilesystemHelper|\PHPUnit\Framework\MockObject\MockObject */
 	protected $fileSystemHelper;
 
-	/** @var LoggerInterface|\PHPUnit\Framework\MockObject\MockObject */
-	protected $logger;
+	/** @var LogWrapper|\PHPUnit\Framework\MockObject\MockObject */
+	protected $log;
 
 	/** @var IAvatarManager|\PHPUnit\Framework\MockObject\MockObject */
 	protected $avatarManager;
@@ -95,7 +95,7 @@ class ManagerTest extends \Test\TestCase {
 		$this->access = $this->createMock(Access::class);
 		$this->config = $this->createMock(IConfig::class);
 		$this->fileSystemHelper = $this->createMock(FilesystemHelper::class);
-		$this->logger = $this->createMock(LoggerInterface::class);
+		$this->log = $this->createMock(LogWrapper::class);
 		$this->avatarManager = $this->createMock(IAvatarManager::class);
 		$this->image = $this->createMock(Image::class);
 		$this->ncUserManager = $this->createMock(IUserManager::class);
@@ -113,7 +113,7 @@ class ManagerTest extends \Test\TestCase {
 		$this->manager = new Manager(
 			$this->config,
 			$this->fileSystemHelper,
-			$this->logger,
+			$this->log,
 			$this->avatarManager,
 			$this->image,
 			$this->ncUserManager,

@@ -1,5 +1,5 @@
 { "translations": {
-    "External storage" : "Magazyn zewnętrzny",
+    "External storage" : "Zewnętrzne zasoby dyskowe",
     "Personal" : "Osobiste",
     "System" : "System",
     "Grant access" : "Udziel dostępu",
@@ -39,7 +39,6 @@
     "Credentials saved" : "Poświadczenia zapisane",
     "Credentials saving failed" : "Zapisywanie poświadczeń nie powiodło się",
     "Credentials required" : "Wymagane poświadczenia",
-    "Forbidden to manage local mounts" : "Zabronione zarządzanie lokalnym montowaniem",
     "Storage with ID \"%d\" not found" : "Nie znaleziono magazynu o ID \"%d\"",
     "Invalid backend or authentication mechanism class" : "Nieprawidłowy mechanizm uwierzytelniania powrotu lub klasy",
     "Invalid mount point" : "Nieprawidłowy punkt montowania",
@@ -131,11 +130,12 @@
     "Click to recheck the configuration" : "Kliknij, aby ponownie sprawdzić konfigurację",
     "Add storage" : "Dodaj zewnętrzne magazyny",
     "Advanced settings" : "Ustawienia zaawansowane",
-    "Allow users to mount external storage" : "Zezwalaj użytkownikom na montowanie magazynów zewnętrznych",
-    "Global credentials can be used to authenticate with multiple external storages that have the same credentials." : "Poświadczenia globalne mogą być używane do uwierzytelniania z wieloma zewnętrznymi magazynami, o ile posiadają takie same poświadczenia.",
+    "Allow users to mount external storage" : "Pozwól użytkownikom montować zewnętrzne zasoby dyskowe",
+    "Global credentials can be used to authenticate with multiple external storage that have the same credentials." : "Poświadczenia globalne mogą służyć do uwierzytelniania z wieloma zewnętrznymi magazynami, które mają te same poświadczenia.",
     "External storages" : "Magazyny zewnętrzne",
     "(group)" : "(grupa)",
     "SMB / CIFS" : "SMB/CIFS",
-    "SMB / CIFS using OC login" : "SMB/CIFS za pomocą logowania OC"
+    "SMB / CIFS using OC login" : "SMB/CIFS za pomocą logowania OC",
+    "Global credentials can be used to authenticate with multiple external storages that have the same credentials." : "Poświadczenia globalne mogą być używane do uwierzytelniania z wieloma zewnętrznymi magazynami, o ile posiadają takie same poświadczenia."
 },"pluralForm" :"nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && (n%100<12 || n%100>14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && n%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);"
 }

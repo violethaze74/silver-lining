@@ -61,19 +61,13 @@ export default {
 			}
 		}
 
-		&:hover,
-		&:focus,
-		&:active {
+		&:hover {
 			background-color: rgba(127, 127, 127, .15);
 		}
 
-		&:enabled {
-			&:hover,
-			&:focus,
-			&:active {
-				background-color: rgba(127, 127, 127, .25);
-				opacity: 0.8 !important;
-			}
+		&:enabled:hover {
+			background-color: rgba(127, 127, 127, .25);
+			opacity: 0.8 !important;
 		}
 	}
 </style>

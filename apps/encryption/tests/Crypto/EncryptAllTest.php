@@ -117,12 +117,9 @@ class EncryptAllTest extends TestCase {
 		$this->userInterface = $this->getMockBuilder(UserInterface::class)
 			->disableOriginalConstructor()->getMock();
 
-		/* We need format method to return a string */
-		$outputFormatter = $this->createMock(OutputFormatterInterface::class);
-		$outputFormatter->method('format')->willReturnArgument(0);
 
 		$this->outputInterface->expects($this->any())->method('getFormatter')
-			->willReturn($outputFormatter);
+			->willReturn($this->createMock(OutputFormatterInterface::class));
 
 		$this->userManager->expects($this->any())->method('getBackends')->willReturn([$this->userInterface]);
 		$this->userInterface->expects($this->any())->method('getUsers')->willReturn(['user1', 'user2']);

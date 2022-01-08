@@ -30,6 +30,11 @@
 		<Role
 			:role.sync="primaryRole.value"
 			:scope.sync="primaryRole.scope" />
+
+		<VisibilityDropdown
+			:param-id="accountPropertyId"
+			:display-id="accountProperty"
+			:visibility.sync="visibility" />
 	</section>
 </template>
 
@@ -38,10 +43,12 @@ import { loadState } from '@nextcloud/initial-state'
 
 import Role from './Role'
 import HeaderBar from '../shared/HeaderBar'
+import VisibilityDropdown from '../shared/VisibilityDropdown'
 
-import { ACCOUNT_PROPERTY_READABLE_ENUM } from '../../../constants/AccountPropertyConstants'
+import { ACCOUNT_PROPERTY_ENUM, ACCOUNT_PROPERTY_READABLE_ENUM } from '../../../constants/AccountPropertyConstants'
 
 const { roleMap: { primaryRole } } = loadState('settings', 'personalInfoParameters', {})
+const { profileConfig: { role: { visibility } } } = loadState('settings', 'profileParameters', {})
 
 export default {
 	name: 'RoleSection',
@@ -49,12 +56,15 @@ export default {
 	components: {
 		Role,
 		HeaderBar,
+		VisibilityDropdown,
 	},
 
 	data() {
 		return {
 			accountProperty: ACCOUNT_PROPERTY_READABLE_ENUM.ROLE,
+			accountPropertyId: ACCOUNT_PROPERTY_ENUM.ROLE,
 			primaryRole,
+			visibility,
 		}
 	},
 }

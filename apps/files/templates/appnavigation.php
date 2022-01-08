@@ -1,3 +1,6 @@
+<?php
+script(\OCA\Files\AppInfo\Application::APP_ID, 'dist/files-app-settings');
+?>
 <div id="app-navigation">
 	<ul class="with-icon">
 

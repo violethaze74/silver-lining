@@ -105,7 +105,6 @@ OC.L10N.register(
     "SMB/CIFS" : "SMB/CIFS",
     "Share" : "Jaa",
     "Show hidden files" : "Näytä piilotiedostot",
-    "Verify ACL access when listing files" : "Vahvista ACL-pääsy tiedostoja listatessa",
     "Timeout" : "Aikakatkaisu",
     "Username as share" : "Käyttäjänimi jakona",
     "OpenStack Object Storage" : "OpenStack Object Storage",
@@ -129,10 +128,10 @@ OC.L10N.register(
     "Add storage" : "Lisää tallennustila",
     "Advanced settings" : "Lisäasetukset",
     "Allow users to mount external storage" : "Salli käyttäjien liittää erillisiä tallennustiloja",
-    "Global credentials can be used to authenticate with multiple external storages that have the same credentials." : "Yleisiä tunnistetietoja voidaan käyttää useisiin ulkoisiin tallennustiloihin tunnistautumiseen, joissa käytetään samoja tunnistetietoja.",
     "External storages" : "Erilliset tallennustilat",
     "(group)" : "(ryhmä)",
     "SMB / CIFS" : "SMB / CIFS",
-    "SMB / CIFS using OC login" : "SMB / CIFS käyttäen OC-kirjautumista"
+    "SMB / CIFS using OC login" : "SMB / CIFS käyttäen OC-kirjautumista",
+    "Global credentials can be used to authenticate with multiple external storages that have the same credentials." : "Yleisiä tunnistetietoja voidaan käyttää useisiin ulkoisiin tallennustiloihin tunnistautumiseen, joissa käytetään samoja tunnistetietoja."
 },
 "nplurals=2; plural=(n != 1);");

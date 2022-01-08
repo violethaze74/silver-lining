@@ -147,6 +147,7 @@
     "Cannot write into \"config\" directory" : "Cannot write into \"config\" directory",
     "This can usually be fixed by giving the webserver write access to the config directory. See %s" : "This can usually be fixed by giving the webserver write access to the config directory. See %s",
     "Cannot write into \"apps\" directory" : "Cannot write into \"apps\" directory",
+    "Cannot create \"data\" directory" : "Cannot create \"data\" directory",
     "This can usually be fixed by giving the webserver write access to the root directory. See %s" : "This can usually be fixed by giving the webserver write access to the root directory. See %s",
     "Permissions can usually be fixed by giving the webserver write access to the root directory. See %s." : "Permissions can usually be fixed by giving the webserver write access to the root directory. See %s.",
     "Setting locale to %s failed" : "Setting locale to %s failed",
@@ -184,7 +185,6 @@
     "Files can’t be shared with delete permissions" : "Files can’t be shared with delete permissions",
     "Files can’t be shared with create permissions" : "Files can’t be shared with create permissions",
     "Can’t set expiration date more than %s days in the future" : "Can’t set expiration date more than %s days in the future",
-    "Can't read file" : "Can't read file",
-    "Cannot create \"data\" directory" : "Cannot create \"data\" directory"
+    "Can't read file" : "Can't read file"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

@@ -388,9 +388,7 @@ export default {
 		.email__actions {
 			opacity: 0.4 !important;
 
-			&:hover,
-			&:focus,
-			&:active {
+			&:hover {
 				opacity: 0.8 !important;
 			}
 

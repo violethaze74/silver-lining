@@ -51,7 +51,6 @@ class FileTest extends TestCase {
 	}
 
 	public function testEnable() {
-		$this->config->method('getSystemValue')->willReturnArgument(1);
 		$this->consoleInput->method('getOption')
 			->willReturnMap([
 				['enable', 'true']
@@ -64,7 +63,6 @@ class FileTest extends TestCase {
 	}
 
 	public function testChangeFile() {
-		$this->config->method('getSystemValue')->willReturnArgument(1);
 		$this->consoleInput->method('getOption')
 			->willReturnMap([
 				['file', '/foo/bar/file.log']
@@ -89,7 +87,6 @@ class FileTest extends TestCase {
 	 * @dataProvider changeRotateSizeProvider
 	 */
 	public function testChangeRotateSize($optionValue, $configValue) {
-		$this->config->method('getSystemValue')->willReturnArgument(1);
 		$this->consoleInput->method('getOption')
 			->willReturnMap([
 				['rotate-size', $optionValue]

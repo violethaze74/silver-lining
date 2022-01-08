@@ -963,8 +963,10 @@ class IndexDocument implements IIndexDocument, JsonSerializable {
 
 	/**
 	 * @since 15.0.0
+	 *
+	 * @return array
 	 */
-	public function jsonSerialize(): array {
+	public function jsonSerialize() {
 		return [
 			'id' => $this->getId(),
 			'providerId' => $this->getProviderId(),

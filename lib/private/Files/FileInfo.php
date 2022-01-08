@@ -104,22 +104,18 @@ class FileInfo implements \OCP\Files\FileInfo, \ArrayAccess {
 		$this->rawSize = $this->data['size'] ?? 0;
 	}
 
-	public function offsetSet($offset, $value): void {
+	public function offsetSet($offset, $value) {
 		$this->data[$offset] = $value;
 	}
 
-	public function offsetExists($offset): bool {
+	public function offsetExists($offset) {
 		return isset($this->data[$offset]);
 	}
 
-	public function offsetUnset($offset): void {
+	public function offsetUnset($offset) {
 		unset($this->data[$offset]);
 	}
 
-	/**
-	 * @return mixed
-	 */
-	#[\ReturnTypeWillChange]
 	public function offsetGet($offset) {
 		if ($offset === 'type') {
 			return $this->getType();

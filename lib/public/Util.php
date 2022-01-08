@@ -72,11 +72,8 @@ class Util {
 	 */
 	public const FATAL = 4;
 
-	/** @var \OCP\Share\IManager */
+	/** \OCP\Share\IManager */
 	private static $shareManager;
-
-	/** @var array */
-	private static $scripts = [];
 
 	/**
 	 * get the current installed version of Nextcloud
@@ -176,75 +173,10 @@ class Util {
 	 * add a javascript file
 	 * @param string $application
 	 * @param string $file
-	 * @param string $afterAppId
 	 * @since 4.0.0
 	 */
-	public static function addScript($application, $file = null, $afterAppId = null) {
-		if (!empty($application)) {
-			$path = "$application/js/$file";
-		} else {
-			$path = "js/$file";
-		}
-
-		// Inject js translations if we load a script for
-		// a specific app that is not core, as those js files
-		// need separate handling
-		if ($application !== 'core'
-			&& $file !== null
-			&& strpos($file, 'l10n') === false) {
-			self::addTranslations($application);
-		}
-
-		// manage priorities if defined
-		// we store the data like this, then flatten everything
-		// [
-		// 	'core' => [
-		// 		'first' => [
-		// 			'/core/js/main.js',
-		// 		],
-		// 		'last' => [
-		// 			'/apps/viewer/js/viewer-main.js',
-		// 		]
-		// 	],
-		// 	'viewer' => [
-		// 		'first' => [
-		// 			'/apps/viewer/js/viewer-public.js',
-		// 		],
-		// 		'last' => [
-		// 			'/apps/files_pdfviewer/js/files_pdfviewer-main.js',
-		// 		]
-		// 	]
-		// ]
-		if (!empty($afterAppId)) {
-			// init afterAppId app array if it doesn't exists
-			if (!array_key_exists($afterAppId, self::$scripts)) {
-				self::$scripts[$afterAppId] = ['first' => [], 'last' => []];
-			}
-			self::$scripts[$afterAppId]['last'][] = $path;
-		} else {
-			// init app array if it doesn't exists
-			if (!array_key_exists($application, self::$scripts)) {
-				self::$scripts[$application] = ['first' => [], 'last' => []];
-			}
-			self::$scripts[$application]['first'][] = $path;
-		}
-	}
-
-	/**
-	 * Return the list of scripts injected to the page
-	 * @return array
-	 * @since 24.0.0
-	 */
-	public static function getScripts(): array {
-		// merging first and last data set
-		$mapFunc = function (array $scriptsArray): array {
-			return array_merge(...array_values($scriptsArray));
-		};
-		$appScripts = array_map($mapFunc, self::$scripts);
-		// sort core first
-		$scripts = array_merge(isset($appScripts['core']) ? $appScripts['core'] : [], ...array_values($appScripts));
-		// remove duplicates
-		return array_unique($scripts);
+	public static function addScript($application, $file = null) {
+		\OC_Util::addScript($application, $file);
 	}
 
 	/**
@@ -254,15 +186,7 @@ class Util {
 	 * @since 8.0.0
 	 */
 	public static function addTranslations($application, $languageCode = null) {
-		if (is_null($languageCode)) {
-			$languageCode = \OC::$server->getL10NFactory()->findLanguage($application);
-		}
-		if (!empty($application)) {
-			$path = "$application/l10n/$languageCode";
-		} else {
-			$path = "l10n/$languageCode";
-		}
-		self::$scripts[$application]['first'][] = $path;
+		\OC_Util::addTranslations($application, $languageCode);
 	}
 
 	/**
@@ -588,29 +512,5 @@ class Util {
 			self::$needUpgradeCache = \OC_Util::needUpgrade(\OC::$server->getSystemConfig());
 		}
 		return self::$needUpgradeCache;
-	}
-
-	/**
-	 * Sometimes a string has to be shortened to fit within a certain maximum
-	 * data length in bytes. substr() you may break multibyte characters,
-	 * because it operates on single byte level. mb_substr() operates on
-	 * characters, so does not ensure that the shortend string satisfies the
-	 * max length in bytes.
-	 *
-	 * For example, json_encode is messing with multibyte characters a lot,
-	 * replacing them with something along "\u1234".
-	 *
-	 * This function shortens the string with by $accurancy (-5) from
-	 * $dataLength characters, until it fits within $dataLength bytes.
-	 *
-	 * @since 23.0.0
-	 */
-	public static function shortenMultibyteString(string $subject, int $dataLength, int $accuracy = 5): string {
-		$temp = mb_substr($subject, 0, $dataLength);
-		// json encodes encapsulates the string in double quotes, they need to be substracted
-		while ((strlen(json_encode($temp)) - 2) > $dataLength) {
-			$temp = mb_substr($temp, 0, -$accuracy);
-		}
-		return $temp;
 	}
 }

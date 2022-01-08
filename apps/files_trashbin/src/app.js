@@ -103,7 +103,7 @@ OCA.Trashbin.App = {
 						fileList._removeCallback.bind(fileList, [filename]),
 						function() {
 							fileList.showFileBusyState(tr, false)
-							OC.Notification.show(t('files_trashbin', 'Error while restoring file from trash bin'))
+							OC.Notification.show(t('files_trashbin', 'Error while restoring file from trashbin'))
 						}
 					)
 			},
@@ -133,7 +133,7 @@ OCA.Trashbin.App = {
 						fileList._removeCallback.bind(fileList, [filename]),
 						function() {
 							fileList.showFileBusyState(tr, false)
-							OC.Notification.show(t('files_trashbin', 'Error while removing file from trash bin'))
+							OC.Notification.show(t('files_trashbin', 'Error while removing file from trashbin'))
 						}
 					)
 			},

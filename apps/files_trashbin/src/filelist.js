@@ -90,7 +90,7 @@
 			this.$el.find('.undelete').click('click', _.bind(this._onClickRestoreSelected, this))
 
 			// Sort by most recently deleted first
-			this.setSort('mtime', 'desc')
+			this.setSort('mtime', 'asc')
 
 			/**
 			 * Override crumb making to add "Deleted Files" entry
@@ -197,7 +197,7 @@
 						self.fileMultiSelectMenu.toggleLoading('restore', false)
 					},
 					function() {
-						OC.Notification.show(t('files_trashbin', 'Error while restoring files from trash bin'))
+						OC.Notification.show(t('files_trashbin', 'Error while restoring files from trashbin'))
 					}
 				)
 			},
@@ -220,7 +220,7 @@
 								self.setFiles([])
 							},
 							function() {
-								OC.Notification.show(t('files_trashbin', 'Error while emptying trash bin'))
+								OC.Notification.show(t('files_trashbin', 'Error while emptying trashbin'))
 							}
 						)
 				} else {
@@ -238,7 +238,7 @@
 							self.fileMultiSelectMenu.toggleLoading('delete', false)
 						},
 						function() {
-							OC.Notification.show(t('files_trashbin', 'Error while removing files from trash bin'))
+							OC.Notification.show(t('files_trashbin', 'Error while removing files from trashbin'))
 						}
 					)
 				}

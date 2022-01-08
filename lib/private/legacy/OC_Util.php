@@ -580,8 +580,6 @@ class OC_Util {
 	/**
 	 * add a javascript file
 	 *
-	 * @deprecated 24.0.0
-	 *
 	 * @param string $application application id
 	 * @param string|null $file filename
 	 * @param bool $prepend prepend the Script to the beginning of the list
@@ -612,8 +610,6 @@ class OC_Util {
 
 	/**
 	 * add a translation JS file
-	 *
-	 * @deprecated 24.0.0
 	 *
 	 * @param string $application application id
 	 * @param string|null $languageCode language code, defaults to the current language
@@ -785,7 +781,7 @@ class OC_Util {
 					$errors = array_merge($errors, self::checkDataDirectoryPermissions($CONFIG_DATADIRECTORY));
 				} else {
 					$errors[] = [
-						'error' => $l->t('Cannot create "data" directory.'),
+						'error' => $l->t('Cannot create "data" directory'),
 						'hint' => $l->t('This can usually be fixed by giving the webserver write access to the root directory. See %s',
 							[$urlGenerator->linkToDocs('admin-dir_permissions')])
 					];
@@ -841,6 +837,7 @@ class OC_Util {
 				'json_encode' => 'JSON',
 				'gd_info' => 'GD',
 				'gzencode' => 'zlib',
+				'iconv' => 'iconv',
 				'simplexml_load_string' => 'SimpleXML',
 				'hash' => 'HASH Message Digest Framework',
 				'curl_init' => 'cURL',
@@ -1242,38 +1239,22 @@ class OC_Util {
 	}
 
 	/**
-	 * Check if current locale is non-UTF8
-	 *
-	 * @return bool
-	 */
-	private static function isNonUTF8Locale() {
-		if (function_exists('escapeshellcmd')) {
-			return '' === escapeshellcmd('§');
-		} elseif (function_exists('escapeshellarg')) {
-			return '\'\'' === escapeshellarg('§');
-		} else {
-			return 0 === preg_match('/utf-?8/i', setlocale(LC_CTYPE, 0));
-		}
-	}
-
-	/**
-	 * Check if the setlocale call does not work. This can happen if the right
+	 * Check if the setlocal call does not work. This can happen if the right
 	 * local packages are not available on the server.
 	 *
 	 * @return bool
 	 */
 	public static function isSetLocaleWorking() {
-		if (self::isNonUTF8Locale()) {
+		if ('' === basename('§')) {
 			// Borrowed from \Patchwork\Utf8\Bootup::initLocale
 			setlocale(LC_ALL, 'C.UTF-8', 'C');
 			setlocale(LC_CTYPE, 'en_US.UTF-8', 'fr_FR.UTF-8', 'es_ES.UTF-8', 'de_DE.UTF-8', 'ru_RU.UTF-8', 'pt_BR.UTF-8', 'it_IT.UTF-8', 'ja_JP.UTF-8', 'zh_CN.UTF-8', '0');
-
-			// Check again
-			if (self::isNonUTF8Locale()) {
-				return false;
-			}
 		}
 
+		// Check again
+		if ('' === basename('§')) {
+			return false;
+		}
 		return true;
 	}
 
@@ -1446,5 +1427,18 @@ class OC_Util {
 		} else {
 			return false;
 		}
+	}
+
+	/**
+	 * is this Internet explorer ?
+	 *
+	 * @return boolean
+	 */
+	public static function isIe() {
+		if (!isset($_SERVER['HTTP_USER_AGENT'])) {
+			return false;
+		}
+
+		return preg_match(Request::USER_AGENT_IE, $_SERVER['HTTP_USER_AGENT']) === 1;
 	}
 }

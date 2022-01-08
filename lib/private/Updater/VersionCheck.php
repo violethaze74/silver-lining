@@ -95,13 +95,9 @@ class VersionCheck {
 		}
 
 		if ($xml) {
-			if (\LIBXML_VERSION < 20900) {
-				$loadEntities = libxml_disable_entity_loader(true);
-				$data = @simplexml_load_string($xml);
-				libxml_disable_entity_loader($loadEntities);
-			} else {
-				$data = @simplexml_load_string($xml);
-			}
+			$loadEntities = libxml_disable_entity_loader(true);
+			$data = @simplexml_load_string($xml);
+			libxml_disable_entity_loader($loadEntities);
 			if ($data !== false) {
 				$tmp['version'] = (string)$data->version;
 				$tmp['versionstring'] = (string)$data->versionstring;

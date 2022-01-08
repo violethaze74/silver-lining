@@ -53,9 +53,7 @@ interface ILanguageIterator extends \Iterator {
 	 * Move forward to next element
 	 *
 	 * @since 14.0.0
-	 * @return void
 	 */
-	#[\ReturnTypeWillChange]
 	public function next();
 
 	/**

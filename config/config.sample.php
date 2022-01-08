@@ -809,11 +809,11 @@ $CONFIG = [
 
 /**
  * In certain environments it is desired to have a read-only configuration file.
- * When this switch is set to ``true``, writing to the config file will be
- * forbidden. Therefore, it will not be possible to configure all options via
- * the Web interface. Furthermore, when updating Nextcloud it is required to
- * make the configuration file writable again and to set this switch to ``false``
- * for the update process.
+ * When this switch is set to ``true`` Nextcloud will not verify whether the
+ * configuration is writable. However, it will not be possible to configure
+ * all options via the Web interface. Furthermore, when updating Nextcloud
+ * it is required to make the configuration file writable again for the update
+ * process.
  *
  * Defaults to ``false``
  */
@@ -1747,19 +1747,6 @@ $CONFIG = [
 'external_storage.auth_availability_delay' => 1800,
 
 /**
- * Allows to create external storages of type "Local" in the web interface and APIs.
- *
- * When disable, it is still possible to create local storages with occ using
- * the following command:
- *
- * % php occ files_external:create /mountpoint local null::null -c datadir=/path/to/data
- *
- * Defaults to ``true``
- *
- */
-'files_external_allow_create_new_local' => true,
-
-/**
  * Specifies how often the local filesystem (the Nextcloud data/ directory, and
  * NFS mounts in data/) is checked for changes made outside Nextcloud. This
  * does not apply to external storage.
@@ -1995,31 +1982,4 @@ $CONFIG = [
  * Defaults to ``true``
  */
 'files_no_background_scan' => false,
-
-/**
- * Log all queries into a file
- *
- * Warning: This heavily decreases the performance of the server and is only
- * meant to debug/profile the query interaction manually.
- * Also, it might log sensitive data into a plain text file.
- */
-'query_log_file' => '',
-
-/**
- * Log all redis requests into a file
- *
- * Warning: This heavily decreases the performance of the server and is only
- * meant to debug/profile the redis interaction manually.
- * Also, it might log sensitive data into a plain text file.
- */
-'redis_log_file' => '',
-
-/**
- * Log all LDAP requests into a file
- *
- * Warning: This heavily decreases the performance of the server and is only
- * meant to debug/profile the LDAP interaction manually.
- * Also, it might log sensitive data into a plain text file.
- */
-'ldap_log_file' => '',
 ];

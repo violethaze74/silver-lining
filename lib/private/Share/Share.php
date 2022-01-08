@@ -593,12 +593,7 @@ class Share extends Constants {
 				$row['share_with_displayname'] = $shareWithUser === null ? $row['share_with'] : $shareWithUser->getDisplayName();
 			} elseif (isset($row['share_with']) && $row['share_with'] != '' &&
 				$row['share_type'] === IShare::TYPE_REMOTE) {
-				$addressBookEntries = \OC::$server->getContactsManager()->search($row['share_with'], ['CLOUD'], [
-					'limit' => 1,
-					'enumeration' => false,
-					'fullmatch' => false,
-					'strict_search' => true,
-				]);
+				$addressBookEntries = \OC::$server->getContactsManager()->search($row['share_with'], ['CLOUD']);
 				foreach ($addressBookEntries as $entry) {
 					foreach ($entry['CLOUD'] as $cloudID) {
 						if ($cloudID === $row['share_with']) {

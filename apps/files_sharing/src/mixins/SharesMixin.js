@@ -110,24 +110,30 @@ export default {
 			return moment().add(1, 'days')
 		},
 
-		// Datepicker language
+		/**
+		 * Datepicker lang values
+		 * https://github.com/nextcloud/nextcloud-vue/pull/146
+		 * TODO: have this in vue-components
+		 *
+		 * @returns {int}
+		 */
+		firstDay() {
+			return window.firstDay
+				? window.firstDay
+				: 0 // sunday as default
+		},
 		lang() {
-			const weekdaysShort = window.dayNamesShort
-				? window.dayNamesShort // provided by nextcloud
-				: ['Sun.', 'Mon.', 'Tue.', 'Wed.', 'Thu.', 'Fri.', 'Sat.']
-			const monthsShort = window.monthNamesShort
-				? window.monthNamesShort // provided by nextcloud
-				: ['Jan.', 'Feb.', 'Mar.', 'Apr.', 'May.', 'Jun.', 'Jul.', 'Aug.', 'Sep.', 'Oct.', 'Nov.', 'Dec.']
-			const firstDayOfWeek = window.firstDay ? window.firstDay : 0
-
+			// fallback to default in case of unavailable data
 			return {
-				formatLocale: {
-					firstDayOfWeek,
-					monthsShort,
-					weekdaysMin: weekdaysShort,
-					weekdaysShort,
+				days: window.dayNamesShort
+					? window.dayNamesShort // provided by nextcloud
+					: ['Sun.', 'Mon.', 'Tue.', 'Wed.', 'Thu.', 'Fri.', 'Sat.'],
+				months: window.monthNamesShort
+					? window.monthNamesShort // provided by nextcloud
+					: ['Jan.', 'Feb.', 'Mar.', 'Apr.', 'May.', 'Jun.', 'Jul.', 'Aug.', 'Sep.', 'Oct.', 'Nov.', 'Dec.'],
+				placeholder: {
+					date: 'Select Date', // TODO: Translate
 				},
-				monthFormat: 'MMM',
 			}
 		},
 

@@ -31,7 +31,6 @@ namespace OCP\AppFramework\Bootstrap;
 
 use OCP\AppFramework\IAppContainer;
 use OCP\Authentication\TwoFactorAuth\IProvider;
-use OCP\Calendar\ICalendarProvider;
 use OCP\Capabilities\ICapability;
 use OCP\EventDispatcher\IEventDispatcher;
 use OCP\Files\Template\ICustomTemplateProvider;
@@ -249,19 +248,19 @@ interface IRegistrationContext {
 	 * Register a calendar provider
 	 *
 	 * @param string $class
-	 * @psalm-param class-string<ICalendarProvider> $class
+	 * @psalm-param class-string<IProvider> $class
 	 * @since 23.0.0
 	 */
 	public function registerCalendarProvider(string $class): void;
 
 	/**
 	 * Register an implementation of \OCP\Profile\ILinkAction that
-	 * will handle the implementation of a profile link action
+	 * will handle the implementation of a profile action
 	 *
 	 * @param string $actionClass
 	 * @psalm-param class-string<\OCP\Profile\ILinkAction> $actionClass
 	 * @return void
 	 * @since 23.0.0
 	 */
-	public function registerProfileLinkAction(string $actionClass): void;
+	public function registerProfileAction(string $actionClass): void;
 }

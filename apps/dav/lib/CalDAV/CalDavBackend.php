@@ -39,7 +39,6 @@
 namespace OCA\DAV\CalDAV;
 
 use DateTime;
-use DateTimeInterface;
 use OCA\DAV\AppInfo\Application;
 use OCA\DAV\Connector\Sabre\Principal;
 use OCA\DAV\DAV\Sharing\Backend;
@@ -100,9 +99,7 @@ use function array_merge;
 use function array_values;
 use function explode;
 use function is_array;
-use function is_resource;
 use function pathinfo;
-use function rewind;
 use function sprintf;
 use function str_replace;
 use function strtolower;
@@ -172,25 +169,10 @@ class CalDavBackend extends AbstractBackend implements SyncSupport, Subscription
 		'{http://calendarserver.org/ns/}subscribed-strip-attachments' => 'stripattachments',
 	];
 
-	/**
-	 * properties to index
-	 *
-	 * This list has to be kept in sync with ICalendarQuery::SEARCH_PROPERTY_*
-	 *
-	 * @see \OCP\Calendar\ICalendarQuery
-	 */
-	private const INDEXED_PROPERTIES = [
-		'CATEGORIES',
-		'COMMENT',
-		'DESCRIPTION',
-		'LOCATION',
-		'RESOURCES',
-		'STATUS',
-		'SUMMARY',
-		'ATTENDEE',
-		'CONTACT',
-		'ORGANIZER'
-	];
+	/** @var array properties to index */
+	public static $indexProperties = ['CATEGORIES', 'COMMENT', 'DESCRIPTION',
+		'LOCATION', 'RESOURCES', 'STATUS', 'SUMMARY', 'ATTENDEE', 'CONTACT',
+		'ORGANIZER'];
 
 	/** @var array parameters to index */
 	public static $indexParameters = [
@@ -1888,11 +1870,11 @@ class CalDavBackend extends AbstractBackend implements SyncSupport, Subscription
 			->where($outerQuery->expr()->isNull('deleted_at'));
 
 		if (isset($options['timerange'])) {
-			if (isset($options['timerange']['start']) && $options['timerange']['start'] instanceof DateTimeInterface) {
+			if (isset($options['timerange']['start']) && $options['timerange']['start'] instanceof DateTime) {
 				$outerQuery->andWhere($outerQuery->expr()->gt('lastoccurence',
 					$outerQuery->createNamedParameter($options['timerange']['start']->getTimeStamp())));
 			}
-			if (isset($options['timerange']['end']) && $options['timerange']['end'] instanceof DateTimeInterface) {
+			if (isset($options['timerange']['end']) && $options['timerange']['end'] instanceof DateTime) {
 				$outerQuery->andWhere($outerQuery->expr()->lt('firstoccurence',
 					$outerQuery->createNamedParameter($options['timerange']['end']->getTimeStamp())));
 			}
@@ -1917,40 +1899,7 @@ class CalDavBackend extends AbstractBackend implements SyncSupport, Subscription
 		}
 
 		$result = $outerQuery->executeQuery();
-		$calendarObjects = array_filter($result->fetchAll(), function (array $row) use ($options) {
-			$start = $options['timerange']['start'] ?? null;
-			$end = $options['timerange']['end'] ?? null;
-
-			if ($start === null || !($start instanceof DateTimeInterface) || $end === null || !($end instanceof DateTimeInterface)) {
-				// No filter required
-				return true;
-			}
-
-			$isValid = $this->validateFilterForObject($row, [
-				'name' => 'VCALENDAR',
-				'comp-filters' => [
-					[
-						'name' => 'VEVENT',
-						'comp-filters' => [],
-						'prop-filters' => [],
-						'is-not-defined' => false,
-						'time-range' => [
-							'start' => $start,
-							'end' => $end,
-						],
-					],
-				],
-				'prop-filters' => [],
-				'is-not-defined' => false,
-				'time-range' => null,
-			]);
-			if (is_resource($row['calendardata'])) {
-				// Put the stream back to the beginning so it can be read another time
-				rewind($row['calendardata']);
-			}
-			return $isValid;
-		});
-		$result->closeCursor();
+		$calendarObjects = $result->fetchAll();
 
 		return array_map(function ($o) {
 			$calendarData = Reader::read($o['calendardata']);
@@ -2665,7 +2614,6 @@ class CalDavBackend extends AbstractBackend implements SyncSupport, Subscription
 				'size' => (int)$row['size'],
 			];
 		}
-		$stmt->closeCursor();
 
 		return $result;
 	}
@@ -2999,7 +2947,7 @@ class CalDavBackend extends AbstractBackend implements SyncSupport, Subscription
 			}
 
 			foreach ($component->children() as $property) {
-				if (in_array($property->name, self::INDEXED_PROPERTIES, true)) {
+				if (in_array($property->name, self::$indexProperties)) {
 					$value = $property->getValue();
 					// is this a shitty db?
 					if (!$this->db->supports4ByteText()) {
@@ -3045,7 +2993,6 @@ class CalDavBackend extends AbstractBackend implements SyncSupport, Subscription
 			->executeQuery();
 
 		$ids = $result->fetchAll();
-		$result->closeCursor();
 		foreach ($ids as $id) {
 			$this->deleteCalendar(
 				$id['id'],

@@ -90,12 +90,7 @@ class CloudIdManager implements ICloudIdManager {
 	}
 
 	protected function getDisplayNameFromContact(string $cloudId): ?string {
-		$addressBookEntries = $this->contactsManager->search($cloudId, ['CLOUD'], [
-			'limit' => 1,
-			'enumeration' => false,
-			'fullmatch' => false,
-			'strict_search' => true,
-		]);
+		$addressBookEntries = $this->contactsManager->search($cloudId, ['CLOUD']);
 		foreach ($addressBookEntries as $entry) {
 			if (isset($entry['CLOUD'])) {
 				foreach ($entry['CLOUD'] as $cloudID) {

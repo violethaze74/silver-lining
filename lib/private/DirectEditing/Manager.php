@@ -82,7 +82,7 @@ class Manager implements IManager {
 		$this->connection = $connection;
 		$this->userId = $userSession->getUser() ? $userSession->getUser()->getUID() : null;
 		$this->rootFolder = $rootFolder;
-		$this->l10n = $l10nFactory->get('lib');
+		$this->l10n = $l10nFactory->get('core');
 		$this->encryptionManager = $encryptionManager;
 	}
 

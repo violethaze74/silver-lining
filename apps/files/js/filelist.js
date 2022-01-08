@@ -2232,9 +2232,7 @@
 			this.hideMask();
 
 			if (status === 401) {
-				// We are not authentificated, so reload the page so that we get
-				// redirected to the login page while saving the current url.
-				location.reload(); 
+				return false;
 			}
 
 			// Firewall Blocked request?

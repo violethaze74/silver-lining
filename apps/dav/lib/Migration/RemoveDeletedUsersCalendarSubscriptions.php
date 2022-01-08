@@ -41,8 +41,7 @@ class RemoveDeletedUsersCalendarSubscriptions implements IRepairStep {
 	/** @var int */
 	private $progress = 0;
 
-	/** @var int[] */
-	private $orphanSubscriptionIds = [];
+	private $orphanSubscriptions = [];
 
 	private const SUBSCRIPTIONS_CHUNK_SIZE = 1000;
 
@@ -75,7 +74,7 @@ class RemoveDeletedUsersCalendarSubscriptions implements IRepairStep {
 		$output->finishProgress();
 		$this->deleteOrphanSubscriptions();
 
-		$output->info(sprintf('%d calendar subscriptions without an user have been cleaned up', count($this->orphanSubscriptionIds)));
+		$output->info(sprintf('%d calendar subscriptions without an user have been cleaned up', count($this->orphanSubscriptions)));
 	}
 
 	/**
@@ -113,7 +112,7 @@ class RemoveDeletedUsersCalendarSubscriptions implements IRepairStep {
 		while ($row = $result->fetch()) {
 			$username = $this->getPrincipal($row['principaluri']);
 			if (!$this->userManager->userExists($username)) {
-				$this->orphanSubscriptionIds[] = (int) $row['id'];
+				$this->orphanSubscriptions[] = $row['id'];
 			}
 		}
 		$result->closeCursor();
@@ -123,7 +122,7 @@ class RemoveDeletedUsersCalendarSubscriptions implements IRepairStep {
 	 * @throws Exception
 	 */
 	private function deleteOrphanSubscriptions(): void {
-		foreach ($this->orphanSubscriptionIds as $orphanSubscriptionID) {
+		foreach ($this->orphanSubscriptions as $orphanSubscriptionID) {
 			$this->deleteOrphanSubscription($orphanSubscriptionID);
 		}
 	}

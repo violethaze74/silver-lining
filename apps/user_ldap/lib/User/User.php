@@ -35,6 +35,7 @@ use OCA\User_LDAP\Access;
 use OCA\User_LDAP\Connection;
 use OCA\User_LDAP\Exceptions\AttributeNotSet;
 use OCA\User_LDAP\FilesystemHelper;
+use OCA\User_LDAP\LogWrapper;
 use OCP\IAvatarManager;
 use OCP\IConfig;
 use OCP\ILogger;
@@ -42,7 +43,6 @@ use OCP\Image;
 use OCP\IUser;
 use OCP\IUserManager;
 use OCP\Notification\IManager as INotificationManager;
-use Psr\Log\LoggerInterface;
 
 /**
  * User
@@ -71,9 +71,9 @@ class User {
 	 */
 	protected $image;
 	/**
-	 * @var LoggerInterface
+	 * @var LogWrapper
 	 */
-	protected $logger;
+	protected $log;
 	/**
 	 * @var IAvatarManager
 	 */
@@ -112,16 +112,24 @@ class User {
 	 * @brief constructor, make sure the subclasses call this one!
 	 * @param string $username the internal username
 	 * @param string $dn the LDAP DN
+	 * @param Access $access
+	 * @param IConfig $config
+	 * @param FilesystemHelper $fs
+	 * @param Image $image any empty instance
+	 * @param LogWrapper $log
+	 * @param IAvatarManager $avatarManager
+	 * @param IUserManager $userManager
+	 * @param INotificationManager $notificationManager
 	 */
 	public function __construct($username, $dn, Access $access,
 		IConfig $config, FilesystemHelper $fs, Image $image,
-		LoggerInterface $logger, IAvatarManager $avatarManager, IUserManager $userManager,
+		LogWrapper $log, IAvatarManager $avatarManager, IUserManager $userManager,
 		INotificationManager $notificationManager) {
 		if ($username === null) {
-			$logger->error("uid for '$dn' must not be null!", ['app' => 'user_ldap']);
+			$log->log("uid for '$dn' must not be null!", ILogger::ERROR);
 			throw new \InvalidArgumentException('uid must not be null!');
 		} elseif ($username === '') {
-			$logger->error("uid for '$dn' must not be an empty string", ['app' => 'user_ldap']);
+			$log->log("uid for '$dn' must not be an empty string", ILogger::ERROR);
 			throw new \InvalidArgumentException('uid must not be an empty string!');
 		}
 
@@ -132,7 +140,7 @@ class User {
 		$this->dn = $dn;
 		$this->uid = $username;
 		$this->image = $image;
-		$this->logger = $logger;
+		$this->log = $log;
 		$this->avatarManager = $avatarManager;
 		$this->userManager = $userManager;
 		$this->notificationManager = $notificationManager;
@@ -464,9 +472,9 @@ class User {
 	 * bytes), '1234 MB' (quota in MB - check the \OC_Helper::computerFileSize method for more info)
 	 *
 	 * fetches the quota from LDAP and stores it as Nextcloud user value
-	 * @param ?string $valueFromLDAP the quota attribute's value can be passed,
+	 * @param string $valueFromLDAP the quota attribute's value can be passed,
 	 * to save the readAttribute request
-	 * @return void
+	 * @return null
 	 */
 	public function updateQuota($valueFromLDAP = null) {
 		if ($this->wasRefreshed('quota')) {
@@ -485,19 +493,19 @@ class User {
 			if ($aQuota && (count($aQuota) > 0) && $this->verifyQuotaValue($aQuota[0])) {
 				$quota = $aQuota[0];
 			} elseif (is_array($aQuota) && isset($aQuota[0])) {
-				$this->logger->debug('no suitable LDAP quota found for user ' . $this->uid . ': [' . $aQuota[0] . ']', ['app' => 'user_ldap']);
+				$this->log->log('no suitable LDAP quota found for user ' . $this->uid . ': [' . $aQuota[0] . ']', ILogger::DEBUG);
 			}
-		} elseif (!is_null($valueFromLDAP) && $this->verifyQuotaValue($valueFromLDAP)) {
+		} elseif ($this->verifyQuotaValue($valueFromLDAP)) {
 			$quota = $valueFromLDAP;
 		} else {
-			$this->logger->debug('no suitable LDAP quota found for user ' . $this->uid . ': [' . $valueFromLDAP . ']', ['app' => 'user_ldap']);
+			$this->log->log('no suitable LDAP quota found for user ' . $this->uid . ': [' . $valueFromLDAP . ']', ILogger::DEBUG);
 		}
 
 		if ($quota === false && $this->verifyQuotaValue($defaultQuota)) {
 			// quota not found using the LDAP attribute (or not parseable). Try the default quota
 			$quota = $defaultQuota;
 		} elseif ($quota === false) {
-			$this->logger->debug('no suitable default quota found for user ' . $this->uid . ': [' . $defaultQuota . ']', ['app' => 'user_ldap']);
+			$this->log->log('no suitable default quota found for user ' . $this->uid . ': [' . $defaultQuota . ']', ILogger::DEBUG);
 			return;
 		}
 
@@ -505,11 +513,11 @@ class User {
 		if ($targetUser instanceof IUser) {
 			$targetUser->setQuota($quota);
 		} else {
-			$this->logger->info('trying to set a quota for user ' . $this->uid . ' but the user is missing', ['app' => 'user_ldap']);
+			$this->log->log('trying to set a quota for user ' . $this->uid . ' but the user is missing', ILogger::INFO);
 		}
 	}
 
-	private function verifyQuotaValue(string $quotaValue) {
+	private function verifyQuotaValue($quotaValue) {
 		return $quotaValue === 'none' || $quotaValue === 'default' || \OC_Helper::computerFileSize($quotaValue) !== false;
 	}
 
@@ -565,7 +573,7 @@ class User {
 	 */
 	private function setOwnCloudAvatar() {
 		if (!$this->image->valid()) {
-			$this->logger->error('avatar image data from LDAP invalid for '.$this->dn, ['app' => 'user_ldap']);
+			$this->log->log('avatar image data from LDAP invalid for '.$this->dn, ILogger::ERROR);
 			return false;
 		}
 
@@ -573,7 +581,7 @@ class User {
 		//make sure it is a square and not bigger than 128x128
 		$size = min([$this->image->width(), $this->image->height(), 128]);
 		if (!$this->image->centerCrop($size)) {
-			$this->logger->error('croping image for avatar failed for '.$this->dn, ['app' => 'user_ldap']);
+			$this->log->log('croping image for avatar failed for '.$this->dn, ILogger::ERROR);
 			return false;
 		}
 
